@@ -1,15 +1,18 @@
 fs = 16000;
 t = 0:1/fs:2;
-sig = sin(2*pi*400*t);
-
+sig = 0.1+sin(2*pi*400*t);
 dftsize = 512;
 
+% Rescales input! (see ex. 2.7)
 [simin,nbsecs,fs] = initparams(sig,fs);
+
 sim('recplay');
 out = simout.signals.values;
 
 close all;
+
 % Spectrogram
+figure;
 subplot(2,1,1);
 spectrogram(sig, 3200, 1600, dftsize, fs, 'yaxis');
 title("Input Signal");
@@ -38,7 +41,7 @@ title("PSD Bartlett Output Signal with noise");
 figure;
 % Welch
 subplot(2,1,1);
-pwelch(sig, 1000, 900, dftsize, fs);
+pwelch(sig, 1000, 500, dftsize, fs);
 title("PSD Welch Input Signal");
 subplot(2,1,2);
 pwelch(out, 1000, 900, dftsize, fs);

@@ -1,45 +1,45 @@
 fs = 16000;
 t = 0:1/fs:2;
-sig = sin(2*pi*4*t);
+sig = 1 + sin(2*pi*400*t);
 
-dftsize = 128;
+dftsize = 512;
 
-[simin,nbsecs,fs] = initparams(sinewave,fs);
+[simin,nbsecs,fs] = initparams(sig,fs);
 sim('recplay');
 out = simout.signals.values;
 
-close;
+close all;
 % Spectrogram
 subplot(2,1,1);
-spectrogram(sig, 1600, 800, dftsize, fs, 'yaxis');
+spectrogram(sig, 3200, 1600, dftsize, fs, 'yaxis');
 title("Input Signal");
 subplot(2,1,2);
-spectrogram(out, 1600, 800, dftsize, fs, 'yaxis');
+spectrogram(out, 3200, 1600, dftsize, fs, 'yaxis');
 title("Output Signal with noise");
 
 figure;
 % PSD
 subplot(2,1,1);
-periodogram(sig, [], dftsize);
+periodogram(sig, [], length(sig),fs);
 title("PSD Input Signal");
 subplot(2,1,2);
-periodogram(out, [], dftsize);
+periodogram(out, [], length(sig),fs);
 title("PSD Output Signal with noise");
 
 figure;
 % Bartlett
 subplot(2,1,1);
-periodogram(sig, bartlett(length(sig)), dftsize);
+pwelch(sig,1000, 0, dftsize, fs);
 title("PSD Bartlett Input Signal");
 subplot(2,1,2);
-periodogram(out, bartlett(length(out)), dftsize);
+pwelch(out, 1000, 0, dftsize, fs);
 title("PSD Bartlett Output Signal with noise");
 
 figure;
 % Welch
 subplot(2,1,1);
-pwelch(sig, 1000, 500, dftsize);
+pwelch(sig, 1000, 500, dftsize, fs);
 title("PSD Welch Input Signal");
 subplot(2,1,2);
-pwelch(out, 1000, 500, dftsize);
+pwelch(out, 1000, 900, dftsize, fs);
 title("PSD Welch Output Signal with noise");
