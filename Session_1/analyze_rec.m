@@ -20,10 +20,10 @@ title("Output Signal with noise");
 figure;
 % PSD
 subplot(2,1,1);
-periodogram(sig, [], dftsize,fs);
+periodogram(sig, [], length(sig),fs);
 title("PSD Input Signal");
 subplot(2,1,2);
-periodogram(out, [], dftsize,fs);
+periodogram(out, [], length(sig),fs);
 title("PSD Output Signal with noise");
 
 figure;
