@@ -1,7 +1,7 @@
 fs = 16000;
 t = 0:1/fs:2;
-sig = sin(2*pi*400*t); %DC component added.
-dftsize = 512;
+sig = 1+sin(2*pi*400*t); %DC component added.
+dftsize = 256;
 
 %sig for 2.8
 %sig = sin(2*pi*100*t)+sin(2*pi*200*t)+sin(2*pi*500*t)+sin(2*pi*1500*t)+sin(2*pi*2000*t)+sin(2*pi*4000*t)+sin(2*pi*6000*t);
