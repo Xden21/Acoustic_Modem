@@ -9,15 +9,15 @@ sim('recplay');
 sigout = simout.signals.values; %Noise and signal together.
 
 [~,startVal] = max(sigout);
-startVal = max(1, startVal-20)
-endVal = startVal + 250;
+startVal = max(1, startVal-20);
+endVal = startVal + 100;
 
 %close all;
 figure;
 sgtitle('Measured Impulse Response');
 subplot(2,1,1);
-plotSign = sigout(startVal:endVal);
-plot(plotSign);
+impulseResponseMeasured = sigout(startVal:endVal);
+plot(impulseResponseMeasured);
 title('Time domain impulse response')
 xlabel('sample (k)')
 ylabel('signal');

@@ -1,11 +1,11 @@
 %Calculate impuls response.
 
 fs = 16000;
-sig = [rand(1,2*fs)]; %impulse
-sig(1) = 1;
-[simin,nbsecs,fs] = initparams(sig,fs);
-
-sim('recplay');
+% sig = [rand(1,2*fs)]; %impulse
+% sig(1) = 1;
+% [simin,nbsecs,fs] = initparams(sig,fs);
+% 
+% sim('recplay');
 sigout = simout.signals.values;
 
 
@@ -20,7 +20,7 @@ done = 0;
 i = 1;
 while done == 0    
             if firstPeak ==1
-                if abs(sigout(i))>0.3
+                if abs(sigout(i))>0.6
                     firstPeak = i;
                 end
             end
@@ -47,7 +47,7 @@ end
 figure
 plot(sigout);
 %firstPeak
-firstPeak = max(1, firstPeak - 25);
+firstPeak = max(1, firstPeak - 10);
 figure;
 y = (sigout(firstPeak:firstPeak+length(sig)-1));
 plot(y);

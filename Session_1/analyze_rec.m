@@ -7,15 +7,19 @@ dftsize = 256;
 %sig = sin(2*pi*100*t)+sin(2*pi*200*t)+sin(2*pi*500*t)+sin(2*pi*1500*t)+sin(2*pi*2000*t)+sin(2*pi*4000*t)+sin(2*pi*6000*t);
 
 %white nois signal for 2.9
-sig = randn(1,2*fs);
+sig = rand(1,2*fs);
+sig(1) = 1;
+
 
 % Rescales input! (see ex. 2.7)
 [simin,nbsecs,fs] = initparams(sig,fs);
 
+WhiteNoiseSignal = simin(:,1);
+
 sim('recplay');
 out = simout.signals.values;
 
-close all;
+%close all;
 
 % Spectrogram
 figure;
