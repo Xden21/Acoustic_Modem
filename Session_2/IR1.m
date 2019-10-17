@@ -6,7 +6,15 @@ dftsize = 256;
 [simin,nbsecs,fs] = initparams(sig,fs);
 
 sim('recplay');
-sigout = simout.signals.values; %Noise and signal together.
+sigout = simout.signals.values;
+[~,startVal] = max(sigout);
+endVal = startVal + 250;
+subplot(2,1,1);
+plotSign = sigout(startVal-15:endVal);
+plot(plotSign);
+
+subplot(2,1,2);
+plot(abs(fft(plotSign,fs)));
 
 [~,startVal] = max(sigout);
 startVal = max(1, startVal-20);
