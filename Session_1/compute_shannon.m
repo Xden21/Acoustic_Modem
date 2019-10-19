@@ -1,6 +1,6 @@
 %Estimates the capacity of the channel.
 %sampling frequency determines the bandwidth. (user defined)
-fs = 44100;
+fs = 16000;
 
 t = 0:1/fs:2;
 

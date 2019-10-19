@@ -9,8 +9,6 @@ filteredSig = band_stop_filter(sig,700,3000,fs);
 sim('recplay');
 sigout = simout.signals.values;
 
-
-[~,startVal] = max(sigout);
 row = [filteredSig(1),zeros(1,249)];
 xToep = toeplitz(filteredSig,row);
 
@@ -44,14 +42,9 @@ while done == 0
         i = i+1;
     end
 end
-%close all;
-figure
-plot(sigout);
 %firstPeak
-firstPeak = max(1, firstPeak - 25);
-figure;
+firstPeak = max(1, firstPeak - 20);
 y = (sigout(firstPeak:firstPeak+length(filteredSig)-1));
-plot(y);
 figure;
 h = (xToep\y)';
 sgtitle('Estimated Impulse Response');

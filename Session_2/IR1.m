@@ -7,14 +7,6 @@ dftsize = 256;
 
 sim('recplay');
 sigout = simout.signals.values;
-[~,startVal] = max(sigout);
-endVal = startVal + 250;
-subplot(2,1,1);
-plotSign = sigout(startVal-15:endVal);
-plot(plotSign);
-
-subplot(2,1,2);
-plot(abs(fft(plotSign,fs)));
 
 [~,startVal] = max(sigout);
 startVal = max(1, startVal-20);
@@ -30,6 +22,7 @@ title('Time domain impulse response')
 xlabel('sample (k)')
 ylabel('signal');
 ylim([-1,1]);
+
 subplot(2,1,2);
 L = endVal - startVal;
 

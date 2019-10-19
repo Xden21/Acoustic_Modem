@@ -8,7 +8,7 @@ dftsize = 256;
 
 %white nois signal for 20.9
 sig = rand(1,2*fs);
-%sig(1) = 1;
+sig(1) = 1;
 
 
 % Rescales input! (see ex. 2.7)
@@ -29,25 +29,25 @@ title("Input Signal");
 subplot(2,1,2);
 spectrogram(out, 3200, 1600, dftsize, fs, 'yaxis');
 title("Output Signal with noise");
-
-figure;
-% PSD
-subplot(2,1,1);
-periodogram(sig, [], length(sig),fs);
-title("PSD Input Signal");
-subplot(2,1,2);
-periodogram(out, [], length(sig),fs);
-title("PSD Output Signal with noise");
-
-figure;
-% Bartlett
-subplot(2,1,1);
-pwelch(sig,1000, 0, dftsize, fs);
-title("PSD Bartlett Input Signal");
-subplot(2,1,2);
-pwelch(out, 1000, 0, dftsize, fs);
-title("PSD Bartlett Output Signal with noise");
-
+% 
+% figure;
+% % PSD
+% subplot(2,1,1);
+% periodogram(sig, [], length(sig),fs);
+% title("PSD Input Signal");
+% subplot(2,1,2);
+% periodogram(out, [], length(sig),fs);
+% title("PSD Output Signal with noise");
+% 
+% figure;
+% % Bartlett
+% subplot(2,1,1);
+% pwelch(sig,1000, 0, dftsize, fs);
+% title("PSD Bartlett Input Signal");
+% subplot(2,1,2);
+% pwelch(out, 1000, 0, dftsize, fs);
+% title("PSD Bartlett Output Signal with noise");
+% 
 figure;
 % Welch
 subplot(2,1,1);
@@ -56,3 +56,4 @@ title("PSD Welch Input Signal");
 subplot(2,1,2);
 pwelch(out, 1000, 900, dftsize, fs);
 title("PSD Welch Output Signal with noise");
+ylim([-100,-20]);
