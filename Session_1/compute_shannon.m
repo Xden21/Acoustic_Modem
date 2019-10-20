@@ -14,7 +14,7 @@ sigout = simout.signals.values; %Noise and signal together.
 dftsize = 256; %dftsize => bins is dftsize/2.
 [Ps] = pwelch(sigout,1000, 500, dftsize, fs);  %recorded signal PSD
 
-sig = zeros(2*fs,1);% noise signal
+sig = zeros(1,2*fs);% noise signal
 [simin,nbsecs,fs] = initparams(sig,fs);
 
 sim('recplay');
