@@ -71,3 +71,5 @@ title('Single-Sided Amplitude Spectrum of the Impulse response')
 xlabel('f (Hz)')
 ylabel('P1 (dB)')
 ylim([-100,-20]);
+
+save IRest.mat h;
