@@ -6,9 +6,9 @@ dftsize = 256;
 %sig for 2.8
 %sig = sin(2*pi*100*t)+sin(2*pi*200*t)+sin(2*pi*500*t)+sin(2*pi*1500*t)+sin(2*pi*2000*t)+sin(2*pi*4000*t)+sin(2*pi*6000*t);
 
-%white nois signal for 20.9
+%white nois signal for 2.9
 sig = rand(1,2*fs);
-sig(1) = 1;
+sig(1) = 1; %Used as anchor point to find start of signal
 
 
 % Rescales input! (see ex. 2.7)
