@@ -1,5 +1,6 @@
 %Milestones for the first 2 sessions.
 
+%% Obligatory part
 
 %White noise experiment of exercise 1-2
 analyze_rec;
@@ -7,12 +8,15 @@ analyze_rec;
 IR2;
 %Estimation of IR with IR1
 IR1;
+%% Shannon Channel Capacity measurements
 
 %Shannon Capacity
 compute_shannon;
 
 %open fig Shannon capacity over distance.
 open('Shannon_Capacity_over_distance.fig');
+
+%% Bandstop tests
 
 IR_bandstop;
 %Test voor 3 opeenvolgend gefilterde signalen het verschil.
