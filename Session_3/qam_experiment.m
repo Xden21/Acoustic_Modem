@@ -1,5 +1,5 @@
-seq_len = 16;
-N = 2;
+seq_len = 8;
+N = 4;
 seq = randi(2,1,seq_len) - 1;
 mod_seq = qam_mod(seq, N);
 %mod_seq = awgn(mod_seq, 30);

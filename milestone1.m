@@ -6,7 +6,7 @@
 analyze_rec;
 %Estimation of IR with IR2
 IR2;
-%Estimation of IR with IR1
+%Estimation of IR with IR"1
 IR1;
 
 %% Shannon Channel Capacity measurements
