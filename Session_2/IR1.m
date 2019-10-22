@@ -10,7 +10,7 @@ sigout = simout.signals.values;
 
 [~,startVal] = max(sigout);
 startVal = max(1, startVal-20);
-endVal = startVal + 100;
+endVal = startVal + 250;
 
 %close all;
 figure;

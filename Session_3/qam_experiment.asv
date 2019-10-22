@@ -1,0 +1,7 @@
+seq_len = 1001;
+N = 
+
+seq = randi(2,1,seq_len) - 1;
+mod_seq = qam_mod(seq, N);
+
+scatterplot(mod_seq);

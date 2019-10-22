@@ -1,0 +1,6 @@
+function [outputArg1,outputArg2] = ber(inputSig,outputSig)
+    outputSig = outputSig(1:length(inputSig));
+    
+    [
+end
+

@@ -1,0 +1,9 @@
+function mod_sig = qam_mod(sig,Nq)
+    if rem(length(sig),Nq) ~= 0
+        sig = [sig, zeros(1,rem(length(sig), Nq))];
+    end
+    data_in = reshape(sig,length(sig)/(2^Nq),Nq)
+    data_in_de = bi2de(data_in);
+    mod_sig = qammod(sig, 2^Nq);
+end
+
