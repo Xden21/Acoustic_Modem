@@ -15,6 +15,7 @@ endVal = startVal + 250;
 %close all;
 figure;
 sgtitle('Measured Impulse Response');
+
 subplot(2,1,1);
 impulseResponseMeasured = sigout(startVal:endVal);
 plot(impulseResponseMeasured);
@@ -25,7 +26,6 @@ ylim([-1,1]);
 
 subplot(2,1,2);
 L = endVal - startVal;
-
 y = sigout(startVal:endVal);
 Y = fft(y);
 F2 = abs(Y/L);

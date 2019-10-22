@@ -3,7 +3,7 @@ function mod_sig = qam_mod(sig,Nq)
         sig = [sig, zeros(1,Nq - rem(length(sig), Nq))];
     end
     data_in = reshape(sig,Nq,length(sig)/Nq)';
-    data_in_de = bi2de(data_in, 'left-msb');
+    data_in_de = bi2de(data_in, 'left-msb')';
     mod_sig = qammod(data_in_de, 2^Nq, 'UnitAveragePower',true);
 end
 
