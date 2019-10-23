@@ -1,4 +1,4 @@
-function mod_sig = ofdm_mod(sig, qam_dim, nfft)
+function mod_sig = ofdm_mod(sig, qam_dim, nfft, prefix_length)
     %Bookkeeping
     if mod(nfft,2) ~= 0
         error('fft size must be an even number')
@@ -15,10 +15,10 @@ function mod_sig = ofdm_mod(sig, qam_dim, nfft)
     
     %Step 2: Pad data to fit in the frames
     padcount = elements_per_frame - mod(length(qam_sig), elements_per_frame);
-    qam_sig_padded = [qam_sig, zeros(1,padcount)]'; %Column vector, easier for later
+    qam_sig_padded = [qam_sig, zeros(1,padcount)];
     
     %Step 3: Serial to parallel shift
-    frame_count = qam_sig_padded/elements_per_frame;
+    frame_count = length(qam_sig_padded)/elements_per_frame;
     
     %Generate empty packet
     ofdm_packet = zeros(nfft, frame_count);
@@ -28,14 +28,15 @@ function mod_sig = ofdm_mod(sig, qam_dim, nfft)
         % Add QAM symbols
         ofdm_packet(2:elements_per_frame+1, frame_i) = qam_sig_padded((frame_i-1)*elements_per_frame+1:frame_i*elements_per_frame);
          %Add complex conjugate of QAM singals in reverse order
-        ofdm_packet(elements_per_frame+3:end) = fliplr(conj(qam_sig_padded((frame_i-1)*elements_per_frame+1:frame_i*elements_per_frame)));
+        ofdm_packet(elements_per_frame+3:end, frame_i) = fliplr(conj(qam_sig_padded((frame_i-1)*elements_per_frame+1:frame_i*elements_per_frame)));
     end
-    
-    %Step 4: Add cyclic prefix to each frame
-    %TODO
-    
+        
     %Step 5: calculate time domain values and serialize
     ofdm_td = ifft(ofdm_packet);
+    
+    %Add cyclic prefix.
+    ofdm_td = [ofdm_td(end-prefix_length+1:end,:);ofdm_td];
+    
     mod_sig = ofdm_td(:);
     
     %Time domain ofdm signal is now in mod_sig
