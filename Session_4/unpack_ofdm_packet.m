@@ -18,7 +18,6 @@ function bitstream = unpack_ofdm_packet(ofdm_packet,qam_orders)
         if qam_orders(i) ~= 0
             bitstream(last_index+1:last_index+bits_per_bin(i)) = qam_demod(ofdm_packet(i,:), qam_orders(i));
             last_index = last_index + bits_per_bin(i);
-            i
         end
     end
 end

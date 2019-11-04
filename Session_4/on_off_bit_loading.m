@@ -1,4 +1,4 @@
-function ofdm_packet = on_off_bit_loading(sig, channel_model, channel_fraction)
+function ofdm_packet = on_off_bit_loading(sig, channel_model,qam_order, channel_fraction)
     %ON_OFF_BIT_LOADING Summary of this function goes here
     %   Detailed explanation goes here
 
@@ -15,11 +15,11 @@ function ofdm_packet = on_off_bit_loading(sig, channel_model, channel_fraction)
         if channel_model(i) < min_val
             channel_model(i) = 0;
         else
-            channel_model(i) = 1;
+            channel_model(i) = qam_order;
         end
     end
-    
+    qam_orders = [channel_model,0,fliplr(channel_model)];
+    ofdm_packet = build_ofdm_packet(sig,qam_orders);
     % Build packet so that the non used frequency bins are zero.
     
 end
-
