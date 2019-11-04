@@ -1,8 +1,0 @@
-seq_len = 8000;
-N = 4;
-seq = randi([0,1],1,seq_len);
-mod_seq = ofdm(seq, N);
-mod_seq = awgn(mod_seq, 30);
-
-demod_seq = qam_demod(mod_seq, N);
-ratio = ber(seq, demod_seq)

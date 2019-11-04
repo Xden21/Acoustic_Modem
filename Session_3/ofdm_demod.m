@@ -1,4 +1,4 @@
-function sig = ofdm_demod(mod_sig, qam_dim, nfft, prefix_length)
+function sig = ofdm_demod(mod_sig, nfft, prefix_length, channel_response)
     %Bookkeeping
     if mod(nfft,2) ~= 0
         error('fft size must be an even number')
@@ -6,9 +6,6 @@ function sig = ofdm_demod(mod_sig, qam_dim, nfft, prefix_length)
     elements_per_frame = nfft/2 -1; %Amount of elements of the modulated 
                                     %signal must be added to each frame
     
-    if qam_dim < 2 || qam_dim > 6
-        error('qam_dim must be an integer between 2 and 6 (incl)')
-    end
     
     %Step 1: parallelize the incoming signal.
     frame_count = length(mod_sig)/(nfft+prefix_length);
@@ -21,7 +18,21 @@ function sig = ofdm_demod(mod_sig, qam_dim, nfft, prefix_length)
     
     ofdm_packet = fft(ofdm_td);
     
-    %Step 3: Unpack ofdm frames to QAM symbol stream
+    %Step 3: Equalize
+    
+    if nargin == 4
+        %Invert channel_response
+        channel_response = channel_response.^(-1);
+        H = diag(channel_response);
+
+        %Equalize
+        ofdm_packet_eq = H * ofdm_packet;
+    else
+        ofdm_packet_eq = ofdm_packet;
+    end
+    %Step 4: Unpack ofdm frames to QAM symbol stream
+    
+    % Basic Implementation
     
     %Make empty signal stream
     qam_sig_padded = zeros(1, nfft*elements_per_frame);
@@ -29,13 +40,11 @@ function sig = ofdm_demod(mod_sig, qam_dim, nfft, prefix_length)
     for frame_i=1:frame_count
         %Pull out original QAM signal values from each frame and add to
         %signal stream
-        qam_sig_padded((frame_i-1)*elements_per_frame + 1:frame_i*elements_per_frame) = ofdm_packet(2:elements_per_frame+1, frame_i);
+        qam_sig_padded((frame_i-1)*elements_per_frame + 1:frame_i*elements_per_frame) = ofdm_packet_eq(2:elements_per_frame+1, frame_i);
     end
     
-    %Step 4:Unpad and demodulate QAM signal to get orignal signal sequence
+    % Remove padding?
+    sig = qam_sig_padded;
 
-    %TODO remove padding? => With noise present, could be difficult if
-    %there is no knowledgde about desired signal length.
-    sig = qam_demod(qam_sig_padded, qam_dim);    
 end
 
