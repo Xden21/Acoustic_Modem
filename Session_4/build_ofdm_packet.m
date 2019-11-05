@@ -28,7 +28,7 @@ function ofdm_packet = build_ofdm_packet(bitstream,qam_orders)
         if qam_orders(i) ~= 0
             qam_symb = qam_mod(bitstream_padded(last_index+1:last_index + bits_per_bin(i)), qam_orders(i));
             ofdm_packet(i,:) = qam_symb;
-            ofdm_packet(nfft-i+1,:) = conj(qam_symb);            
+            ofdm_packet(nfft-i+2,:) = conj(qam_symb);            
             last_index = last_index + bits_per_bin(i);
         end
     end
