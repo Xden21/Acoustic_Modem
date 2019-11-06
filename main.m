@@ -9,7 +9,7 @@ snr = 30;
 [bitStream, imageData, colorMap, imageSize, bitsPerPixel] = imagetobitstream('image.bmp');
 
 % QAM modulation
-qamStream = qam_mod(bitStream, qam_dim);
+% qamStream = qam_mod(bitStream, qam_dim);
 
 % OFDM modulation
 ofdmStream = ofdm_mod(qamStream, nfft, prefix_length);
