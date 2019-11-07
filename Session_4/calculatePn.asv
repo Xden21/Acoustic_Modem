@@ -42,17 +42,7 @@ qam_orders = qam_dim .* ones(nfft,1);
 qam_orders(1) = 0; % DC
 qam_orders(nfft/2+1) = 0; % Nyquist frequency
 
-mod_seq = ofdm_mod_bl(seq', qam_orders, prefix_length);
-
-rxOfdmStream = awgn(mod_seq, snr);
-% Ofmd demodulation
-demod_seq = ofdm_demod_bl(rxOfdmStream, qam_orders,prefix_length);
-
-% BER
-ber(seq, demod_seq') %ber basic
-
-
-% Adaptive
+% % Adaptive
 qam_orders = adaptive_bit_loading(channel_model, Pn);
 
 mod_seq = ofdm_mod_bl(seq', qam_orders, prefix_length);
@@ -61,5 +51,6 @@ rxOfdmStream = awgn(mod_seq, snr);
 % Ofmd demodulation
 demod_seq = ofdm_demod_bl(rxOfdmStream, qam_orders,prefix_length);
 
+
 % BER
-ber(seq, demod_seq') %ber adaptive
+ber(seq, demod_seq')
