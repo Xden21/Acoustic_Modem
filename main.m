@@ -12,7 +12,7 @@ snr = 30;
 % qamStream = qam_mod(bitStream, qam_dim);
 
 % OFDM modulation
-ofdmStream = ofdm_mod(qamStream, nfft, prefix_length);
+ofdmStream = ofdm_mod(bitStream, nfft, prefix_length);
 
 % Channel
 rxOfdmStream = awgn(ofdmStream, snr);

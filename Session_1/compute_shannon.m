@@ -5,7 +5,7 @@ fs = 16000;
 t = 0:1/fs:2;
 
 %channel is not flat, noise has gaussian distribution but is not white.
-sig = sin(2*pi*1000*t); % original signal
+sig = randn(1,2*fs); % original signal
 [simin,nbsecs,fs] = initparams(sig,fs);
 
 sim('recplay');
