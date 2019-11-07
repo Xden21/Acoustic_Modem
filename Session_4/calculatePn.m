@@ -1,6 +1,5 @@
 %sampling frequency determines the bandwidth. (user defined)
 channel_order = 50;
-seq_len = 10000;
 nfft = 20;
 snr = 30;
 fs = 16000;
@@ -8,7 +7,7 @@ fs = 16000;
 channel_model = randn(1,channel_order);
 channel_freq_response = fft(channel_model, nfft);
 
-sig = randn(1,seq_len);
+sig = randn(1,2*fs);
 
 sig_filt = fftfilt(channel_model,sig);
 %add Noise
@@ -20,10 +19,11 @@ noiseSig = awgn(sig_filt,snr);
 %let ps go through filter
 TfSquared = channel_freq_response*conj(channel_freq_response)';
 
+Ps = [Ps',fliplr(Ps(2:(length(Ps)-1)))']
 PsFiltered = TfSquared*Ps;
 
 
-Pn = Pout - PsFiltered % Calculate actual signal power
+Pn = real([Pout',fliplr(Pout(2:(length(Pout)-1)))'] - PsFiltered) % Calculate actual signal power
 
 
 
@@ -53,7 +53,7 @@ ber(seq, demod_seq') %ber basic
 
 
 % Adaptive
-qam_orders = adaptive_bit_loading(channel_model, Pn);
+qam_orders = adaptive_bit_loading(channel_freq_response, Pn);
 
 mod_seq = ofdm_mod_bl(seq', qam_orders, prefix_length);
 

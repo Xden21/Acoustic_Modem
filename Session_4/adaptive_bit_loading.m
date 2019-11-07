@@ -9,7 +9,7 @@ function qam_orders = adaptive_bit_loading(channel_model, noise_power)
     
     qam_orders = zeros(length(channel_model),1);
     for i=1:length(qam_orders)
-        qam_orders(i) = floor(log2(1+((abs(channel_model(i))^2)/(gamma*noise_power(2)))));
+        qam_orders(i) = floor(log2(1+((abs(channel_model(i)).^2)/(gamma*noise_power(2)))));
     end
 end
 
