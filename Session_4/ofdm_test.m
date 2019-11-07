@@ -9,20 +9,20 @@ channel_order = 5;
 seq = randi([0,1],1,seq_len);
 
 %Basic
-qam_orders = qam_dim .* ones(nfft,1);
-qam_orders(1) = 0; % DC
-qam_orders(nfft/2+1) = 0; % Nyquist frequency
+% qam_orders = qam_dim .* ones(nfft,1);
+% qam_orders(1) = 0; % DC
+% qam_orders(nfft/2+1) = 0; % Nyquist frequency
 
 % % On Off Bit loading
-% channel_model = randn(1,channel_order);
-% channel_freq_response = fft(channel_model, nfft);
-% qam_orders = on_off_bit_loading(channel_freq_response, qam_dim, 0.3);
+channel_model = randn(1,channel_order);
+channel_freq_response = fft(channel_model, nfft);
+qam_orders = on_off_bit_loading(channel_freq_response, qam_dim, 0.3);
 
 mod_seq = ofdm_mod_bl(seq', qam_orders, prefix_length);
 
-rxOfdmStream = awgn(mod_seq, snr);
+%rxOfdmStream = awgn(mod_seq, snr);
 % Ofmd demodulation
-demod_seq = ofdm_demod_bl(rxOfdmStream, qam_orders,prefix_length);
+demod_seq = ofdm_demod_bl(mod_seq, qam_orders,prefix_length);
 
 
 % BER

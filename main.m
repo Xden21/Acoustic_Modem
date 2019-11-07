@@ -1,9 +1,10 @@
 % Exercise session 4: DMT-OFDM transmission scheme
 qam_dim = 4;
-nfft = 80;
+nfft = 100;
 prefix_length = 80;
-channel_order = 75;
+channel_order = 50;
 snr = 30;
+load IRest.mat
 
 % Convert BMP image to bitstream
 [bitStream, imageData, colorMap, imageSize, bitsPerPixel] = imagetobitstream('image.bmp');
@@ -12,21 +13,23 @@ snr = 30;
 % qamStream = qam_mod(bitStream, qam_dim);
 
 % OFDM modulation
-ofdmStream = ofdm_mod(bitStream, nfft, prefix_length);
+qam_orders = no_bit_loading(nfft, qam_dim);
+
+ofdmStream = ofdm_mod_bl(bitStream, qam_orders, prefix_length);
 
 % Channel
-rxOfdmStream = awgn(ofdmStream, snr);
 
 channel_model = h(1:channel_order);
-rxOfdmStream = fftfilt(channel_model, rxOfdmStream);
+rxOfdmStream = fftfilt(channel_model, ofdmStream);
+%rxOfdmStream = awgn(rxOfdmStream, snr);
 
 channel_freq_response = fft(channel_model, nfft);
 
 % OFDM demodulation
-rxQamStream = ofdm_demod(rxOfdmStream, nfft, prefix_length, channel_freq_response);
+rxBitStream = ofdm_demod_bl(rxOfdmStream, qam_orders, prefix_length, channel_freq_response)';
 
 % QAM demodulation
-rxBitStream = qam_demod(rxQamStream, qam_dim);
+%rxBitStream = qam_demod(rxQamStream, qam_dim);
 
 % Remove padding
 rxBitStream = rxBitStream(1:length(bitStream))';

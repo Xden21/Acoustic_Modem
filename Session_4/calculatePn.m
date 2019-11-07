@@ -1,8 +1,11 @@
 %sampling frequency determines the bandwidth. (user defined)
-channel_order = 50;
-nfft = 20;
-snr = 30;
+channel_order = 10;
+nfft = 500;
+snr = 10;
 fs = 16000;
+
+qam_dim = 6;
+prefix_length = 11;
 
 channel_model = randn(1,channel_order);
 channel_freq_response = fft(channel_model, nfft);
@@ -17,10 +20,10 @@ noiseSig = awgn(sig_filt,snr);
 
 [Ps] = pwelch(sig,1000,500,nfft,fs);
 %let ps go through filter
-TfSquared = channel_freq_response*conj(channel_freq_response)';
+TfSquared = abs(channel_freq_response).^2;
 
-Ps = [Ps',fliplr(Ps(2:(length(Ps)-1)))']
-PsFiltered = TfSquared*Ps;
+Ps = [Ps',fliplr(Ps(2:(length(Ps)-1)))'];
+PsFiltered = TfSquared.*Ps;
 
 
 Pn = real([Pout',fliplr(Pout(2:(length(Pout)-1)))'] - PsFiltered) % Calculate actual signal power
@@ -28,25 +31,21 @@ Pn = real([Pout',fliplr(Pout(2:(length(Pout)-1)))'] - PsFiltered) % Calculate ac
 
 
 
-% Parameters
-seq_len = 10000;
-qam_dim = 4;
-nfft = 20;
-prefix_length = 6;
-
 % sequence generation
-seq = randi([0,1],1,seq_len);
+seq = randi([0,1],1,2*fs);
 
 %Basic
-qam_orders = qam_dim .* ones(nfft,1);
-qam_orders(1) = 0; % DC
-qam_orders(nfft/2+1) = 0; % Nyquist frequency
-
+% qam_orders = qam_dim .* ones(nfft,1);
+% qam_orders(1) = 0; % DC
+% qam_orders(nfft/2+1) = 0; % Nyquist frequency
+qam_orders = no_bit_loading(nfft, qam_dim);
 mod_seq = ofdm_mod_bl(seq', qam_orders, prefix_length);
 
-rxOfdmStream = awgn(mod_seq, snr);
+rxOfdmStream = fftfilt(channel_model, mod_seq);
+%rxOfdmStream = awgn(rxOfdmStream, snr);
+%rxOfdmStream = mod_seq;
 % Ofmd demodulation
-demod_seq = ofdm_demod_bl(rxOfdmStream, qam_orders,prefix_length);
+demod_seq = ofdm_demod_bl(rxOfdmStream, qam_orders,prefix_length, channel_freq_response);
 
 % BER
 ber(seq, demod_seq') %ber basic
@@ -57,9 +56,10 @@ qam_orders = adaptive_bit_loading(channel_freq_response, Pn);
 
 mod_seq = ofdm_mod_bl(seq', qam_orders, prefix_length);
 
-rxOfdmStream = awgn(mod_seq, snr);
+rxOfdmStream = fftfilt(channel_model, mod_seq);
+%rxOfdmStream = awgn(rxOfdmStream, snr);
 % Ofmd demodulation
-demod_seq = ofdm_demod_bl(rxOfdmStream, qam_orders,prefix_length);
+demod_seq = ofdm_demod_bl(rxOfdmStream, qam_orders,prefix_length, channel_freq_response);
 
 % BER
 ber(seq, demod_seq') %ber adaptive
