@@ -9,7 +9,7 @@ function qam_orders = adaptive_bit_loading(channel_model, noise_power)
     qam_plot_orders = zeros(length(channel_model),1);
     qam_orders = zeros(length(channel_model),1);
     for i=2:length(qam_orders)/2
-        order = min( floor(log2(1+((abs(channel_model(i)).^2)/(gamma*noise_power(i))))),floor(log2(1+((abs(channel_model(i)).^2)/(gamma*noise_power(i))))));
+        order = min( floor(log2(1+((abs(channel_model(i)).^2)/(gamma*noise_power(i))))),floor(log2(1+((abs(channel_model(end-i+2)).^2)/(gamma*noise_power(end-i+2))))));
         qam_plot_orders(i) = order;
         qam_plot_orders(end-i+2) = order;
         if order > 6
@@ -20,6 +20,8 @@ function qam_orders = adaptive_bit_loading(channel_model, noise_power)
             qam_orders(end-i+2) = order;
         end
     end
-    plot(
+    
+    figure;
+    plot(real(qam_plot_orders))
 end
 

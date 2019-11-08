@@ -39,6 +39,9 @@ qam_orders = no_bit_loading(nfft, qam_dim);
 mod_seq = ofdm_mod_bl(seq', qam_orders, prefix_length);
 
 rxOfdmStream = fftfilt(channel_model, mod_seq);
+size(rxOfdmStream)
+noise = randn(1,length(rxOfdmStream));
+noiseRaw = lowpass(noise,4000,fs)';
 rxOfdmStream = rxOfdmStream+noiseRaw;
 %rxOfdmStream = awgn(rxOfdmStream, snr);
 %rxOfdmStream = mod_seq;
@@ -52,8 +55,9 @@ ber(seq, demod_seq') %ber basic
 % Adaptive
 qam_orders = adaptive_bit_loading(channel_freq_response, Pn);
 mod_seq = ofdm_mod_bl(seq', qam_orders, prefix_length);
-
 rxOfdmStream = fftfilt(channel_model, mod_seq);
+noise = randn(1,length(rxOfdmStream));
+noiseRaw = lowpass(noise,4000,fs)';
 rxOfdmStream = rxOfdmStream+noiseRaw;
 %rxOfdmStream = awgn(rxOfdmStream, snr);
 % Ofmd demodulation
