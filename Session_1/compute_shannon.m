@@ -2,7 +2,7 @@
 %sampling frequency determines the bandwidth. (user defined)
 fs = 16000;
 
-t = 0:1/fs:2;
+t = 0:1/fs:2;p
 
 %channel is not flat, noise has gaussian distribution but is not white.
 sig = randn(1,2*fs); % original signal
