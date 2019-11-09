@@ -1,6 +1,6 @@
 function Pn = get_noise_power(channel_model,fs,nfft,snr)
 sig = randn(1,2*fs);
-
+snr = snr/4;
 channel_freq_response = fft(channel_model, nfft);
 
 sig_filt = fftfilt(channel_model,sig);

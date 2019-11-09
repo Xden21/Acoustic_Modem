@@ -1,5 +1,5 @@
 fraction = 0.5;
-qam_dim = 4;
+qam_dim = 6;
 nfft = 100;
 prefix_length = 80;
 channel_order = 50;
@@ -70,3 +70,4 @@ imageRx_on_off = bitstreamtoimage(rxBitStream_on_off, imageSize, bitsPerPixel);
 
 % Plot images
 subplot(2,2,4); colormap(colorMap); image(imageRx_on_off); axis image; title('Received image ON-OFF bit loading'); drawnow;
+sgtitle('Basic OFDM vs ON-OFF')

@@ -4,7 +4,7 @@ function qam_orders = adaptive_bit_loading(channel_model, noise_power,max_order)
     if nargin ==2
         max_order = 6;
     end
-    gamma = 2^6*10;
+    gamma = 2^4*10;
     
     if length(channel_model) ~= length(noise_power)
         error('vector lengths dont match');

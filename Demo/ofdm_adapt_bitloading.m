@@ -1,9 +1,9 @@
 fraction = 0.5;
-qam_dim = 4;
+qam_dim = 6;
 nfft = 100;
 prefix_length = 80;
 channel_order = 50;
-snr = 25;
+snr = 40;
 load IRest.mat
 fs=16000;
 
@@ -72,3 +72,4 @@ imageRx_adapt = bitstreamtoimage(rxBitStream_adapt, imageSize, bitsPerPixel);
 
 % Plot images
 subplot(2,2,4); colormap(colorMap); image(imageRx_adapt); axis image; title('Received image adaptive bit loading'); drawnow;
+sgtitle('Basic OFDM vs adaptive')
