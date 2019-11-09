@@ -1,7 +1,7 @@
 %sampling frequency determines the bandwidth. (user defined)
 channel_order = 10;
 nfft = 500;
-snr = 20;
+snr = 12;
 fs = 16000;
 qam_dim = 6;
 prefix_length = 13;
@@ -10,22 +10,7 @@ channel_model = randn(1,channel_order);
 channel_freq_response = fft(channel_model, nfft);
 
 %Calculation of Pn
-sig = randn(1,2*fs);
-sig_filt = fftfilt(channel_model,sig);
-noise = randn(1,2*fs);
-noiseRaw = lowpass(noise,4000,fs);
-noiseSig = sig_filt + noiseRaw;
-[Pout] = pwelch(noiseSig,1000, 500, nfft, fs);  %recorded signal PSD
-
-[Ps] = pwelch(sig,1000,500,nfft,fs);
-%let ps go through filter
-TfSquared = abs(channel_freq_response).^2;
-
-Ps = [Ps',fliplr(Ps(2:(length(Ps)-1)))'];
-PsFiltered = TfSquared.*Ps;
-
-
-Pn = real([Pout',fliplr(Pout(2:(length(Pout)-1)))'] - PsFiltered); % Calculate actual signal power
+Pn = get_noise_power(channel_model,fs,nfft,snr); % Calculate actual signal power
 figure;
 plot(Pn);
 % sequence generation
@@ -39,11 +24,10 @@ qam_orders = no_bit_loading(nfft, qam_dim);
 mod_seq = ofdm_mod_bl(seq', qam_orders, prefix_length);
 
 rxOfdmStream = fftfilt(channel_model, mod_seq);
-size(rxOfdmStream)
-noise = randn(1,length(rxOfdmStream));
-noiseRaw = lowpass(noise,4000,fs)';
-rxOfdmStream = rxOfdmStream+noiseRaw;
-%rxOfdmStream = awgn(rxOfdmStream, snr);
+%noise = 0.2*randn(1,length(rxOfdmStream));
+%noiseRaw = lowpass(noise,4000,fs)' + 0.1*randn(1,length(rxOfdmStream))';
+%rxOfdmStream = rxOfdmStream+noiseRaw;
+rxOfdmStream = awgn(rxOfdmStream, snr);
 %rxOfdmStream = mod_seq;
 % Ofmd demodulation
 demod_seq = ofdm_demod_bl(rxOfdmStream, qam_orders,prefix_length, channel_freq_response);
@@ -56,10 +40,10 @@ ber(seq, demod_seq') %ber basic
 qam_orders = adaptive_bit_loading(channel_freq_response, Pn);
 mod_seq = ofdm_mod_bl(seq', qam_orders, prefix_length);
 rxOfdmStream = fftfilt(channel_model, mod_seq);
-noise = randn(1,length(rxOfdmStream));
-noiseRaw = lowpass(noise,4000,fs)';
-rxOfdmStream = rxOfdmStream+noiseRaw;
-%rxOfdmStream = awgn(rxOfdmStream, snr);
+%noise = 0.2*randn(1,length(rxOfdmStream));
+%noiseRaw = lowpass(noise,4000,fs)' + 0.1*randn(1,length(rxOfdmStream))';
+%rxOfdmStream = rxOfdmStream+noiseRaw;
+rxOfdmStream = awgn(rxOfdmStream, snr);
 % Ofmd demodulation
 demod_seq = ofdm_demod_bl(rxOfdmStream, qam_orders,prefix_length, channel_freq_response);
 

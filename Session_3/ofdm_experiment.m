@@ -34,6 +34,7 @@ for qam = 1:6
 end
 
 semilogy(snrs,results');
+title('OFDM')
 ylim([10^(-4),1]);
 xlabel('SNR [dB]')
 ylabel('BER (log)')

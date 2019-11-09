@@ -1,9 +1,10 @@
-seq_len = 8000;
-N = 4;
-seq = randi([0,1],1,seq_len);
-mod_seq = qam_mod(seq, N);
-mod_seq = awgn(mod_seq, 30);
-scatterplot(mod_seq);
+function ratio =  qam_experiment(qam_order,seq,snr)
 
-demod_seq = qam_demod(mod_seq, N);
-ratio = ber(seq, demod_seq)
+
+mod_seq = qam_mod(seq, qam_order);
+mod_seq = awgn(mod_seq, snr);
+%scatterplot(mod_seq);
+
+demod_seq = qam_demod(mod_seq, qam_order);
+ratio = ber(seq, demod_seq);
+end
