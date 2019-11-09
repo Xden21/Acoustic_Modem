@@ -3,7 +3,7 @@ qam_dim = 4;
 nfft = 100;
 prefix_length = 80;
 channel_order = 50;
-snr = 43;
+snr = 40;
 load IRest.mat
 
 % Convert BMP image to bitstream

@@ -3,7 +3,7 @@ qam_dim = 4;
 nfft = 100;
 prefix_length = 80;
 channel_order = 50;
-snr = 15;
+snr = 25;
 load IRest.mat
 fs=16000;
 
