@@ -23,7 +23,7 @@ function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, chann
     est_channel_freq = zeros(1,cLen);
     for i = 1:cLen
         y_column = full_train_block(i)*ones(rLen,1);
-        est_channel_freq(i) = ofdm_packet(i,:)'\y_column;
+        est_channel_freq(i) = 1/(ofdm_packet(i,:)'\y_column);
     end
     %Step 3: Equalize
     
