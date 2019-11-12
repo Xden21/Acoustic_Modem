@@ -11,7 +11,7 @@ function qam_orders = on_off_bit_loading(channel_model,qam_order, channel_fracti
     
     %only half of the fraction must be deleted, because their conjugate
     %position will be deleted too
-    ind = length(sorted_coef) - ceil(length(sorted_coef)*channel_fraction/2);
+    ind = length(sorted_coef) - ceil(length(sorted_coef)*channel_fraction);
 
     min_val = sorted_coef(ind);
     
