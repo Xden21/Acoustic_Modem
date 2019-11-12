@@ -21,9 +21,11 @@ function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, chann
     full_train_block = [0,trainblock,0,fliplr(conj(trainblock))]; %extend with compl conj
     [cLen,rLen] = size(ofdm_packet);
     est_channel_freq = zeros(1,cLen);
+    trans_ofdm_packet = transpose(ofdm_packet);
     for i = 1:cLen
         y_column = full_train_block(i)*ones(rLen,1);
-        est_channel_freq(i) = ofdm_packet(i,:)'\y_column;
+        trans_ofdm_packet(:,i)
+        est_channel_freq(i) = trans_ofdm_packet(:,i)\y_column;
     end
     %Step 3: Equalize
     

@@ -9,7 +9,7 @@ function mod_sig = ofdm_mod(sig, nfft, prefix_length)
                                     %signal must be added to each frame
     
     %Step 1: Pad data to fit in the frames
-    padcount = elements_per_frame - mod(length(sig), elements_per_frame);
+    padcount = mod(elements_per_frame - mod(length(sig), elements_per_frame),elements_per_frame);
     sig_padded = [sig, zeros(1,padcount)];
     
     %Step 2: Serial to parallel shift
