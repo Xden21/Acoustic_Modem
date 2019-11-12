@@ -8,7 +8,7 @@ stopBand = [1000,5000];
 stdNoise = 0.0001;
 bandNoise = 0.05;
 % sequence generation
-testLen = 50;
+testLen = 10;
 basic_ber = zeros(1,testLen);
 on_off_ber = zeros(1,testLen);
 adaptive_ber = zeros(1,testLen);
