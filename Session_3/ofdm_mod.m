@@ -28,7 +28,7 @@ function mod_sig = ofdm_mod(sig, nfft, prefix_length)
         
    
     %Step 3: calculate time domain values and serialize
-    ofdm_td = ifft(ofdm_packet);
+    ofdm_td = ifft(ofdm_packet, nfft);
     
     %Add cyclic prefix.
     ofdm_td = [ofdm_td(end-prefix_length+1:end,:);ofdm_td];

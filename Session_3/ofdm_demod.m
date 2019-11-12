@@ -15,28 +15,37 @@ function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, chann
     %Step 2: Calculate the transmitted ofdm packet.
     %Remove Cyclic prefix
     ofdm_td = ofdm_td(prefix_length+1:end,:);
-    ofdm_packet = fft(ofdm_td); 
+    ofdm_packet = fft(ofdm_td, nfft); 
     
     %calculate transfer function
     full_train_block = [0,trainblock,0,fliplr(conj(trainblock))]; %extend with compl conj
     [cLen,rLen] = size(ofdm_packet);
     est_channel_freq = zeros(1,cLen);
+    inv_channel_freq = zeros(1,cLen);
     for i = 1:cLen
-        y_column = full_train_block(i)*ones(rLen,1);
-        est_channel_freq(i) = 1/(ofdm_packet(i,:)'\y_column);
+        if full_train_block(i) ~= 0
+            x_column = full_train_block(i)*ones(rLen,1);
+            est_channel_freq(i) = (x_column\ofdm_packet(i,:)');
+            inv_channel_freq(i) = 1/est_channel_freq(i);
+        end
     end
+    
     %Step 3: Equalize
     
-    if nargin == 4
+    
+%     
+%     if nargin == 4
         %Invert channel_response
-        channel_response = channel_response.^(-1);
-        H = diag(channel_response);
+%         channel_response = est_channel_freq.^(-1);
+
+        H = diag(inv_channel_freq);
 
         %Equalize
         ofdm_packet_eq = H * ofdm_packet;
-    else
-        ofdm_packet_eq = ofdm_packet;
-    end
+%     else
+%         ofdm_packet_eq = ofdm_packet;
+%     end
+    
     %Step 4: Unpack ofdm frames to QAM symbol stream
     
     % Basic Implementation
