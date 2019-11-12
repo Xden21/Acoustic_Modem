@@ -1,4 +1,4 @@
-fraction = 0.5;
+fraction = 1;
 qam_dim = 6;
 nfft = 100;
 prefix_length = 80;
