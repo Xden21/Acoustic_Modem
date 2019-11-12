@@ -17,6 +17,6 @@ channel_freq_resp = fft(channel_model);
 %fitler the train seq
 Rx = fftfilt(channel_model,Tx);
 [output_sig,calc_channel_freq_resp] = ofdm_demod(Rx,nfft,prefix_length,channel_freq_resp,trainblock);
-plot(abs(calc_channel_freq_resp));
+plot(abs(calc_channel_freq_resp).^-1);
 hold on;
 plot(abs(channel_freq_resp));
