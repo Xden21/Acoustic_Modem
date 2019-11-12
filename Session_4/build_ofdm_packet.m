@@ -9,7 +9,7 @@ function ofdm_packet = build_ofdm_packet(bitstream,qam_orders)
     end
     
     % Amount of padding to get a multiple of frame_bits
-    pad_count = frame_bits - mod(length(bitstream), frame_bits);
+    pad_count = mod(frame_bits - mod(length(bitstream), frame_bits), frame_bits);
     
     % Add padding to datastream
     bitstream_padded = [bitstream; zeros(pad_count,1)];
@@ -18,18 +18,28 @@ function ofdm_packet = build_ofdm_packet(bitstream,qam_orders)
     frame_count = length(bitstream_padded)/frame_bits;
     
     % Calculate the total amount of bits per bin
-    bits_per_bin = qam_orders.*frame_count;
+     bits_per_bin = qam_orders.*frame_count;
     
     % Build ofdm packet row per row
     ofdm_packet = zeros(nfft, frame_count);
     
-    last_index = 0;
-    for i=1:(nfft/2)
-        if qam_orders(i) ~= 0
-            qam_symb = qam_mod(bitstream_padded(last_index+1:last_index + bits_per_bin(i)), qam_orders(i));
-            ofdm_packet(i,:) = qam_symb;
-            ofdm_packet(nfft-i+2,:) = conj(qam_symb);            
-            last_index = last_index + bits_per_bin(i);
+    
+    for bin=1:nfft/2
+        if qam_orders(bin) ~= 0
+            bits = zeros(1, bits_per_bin(bin));
+            if bin ~= 1
+                bit_offset = sum(qam_orders(1:bin-1));
+            else
+                bit_offset = 0;
+            end
+
+            for frame=1:frame_count
+                    bits(((frame-1) * qam_orders(bin)) + 1: frame * qam_orders(bin)) = ...
+                        bitstream_padded((bit_offset) + (frame - 1) * frame_bits + 1 : (bit_offset) + (frame - 1) * frame_bits + qam_orders(bin));
+            end
+            qam_symb = qam_mod(bits, qam_orders(bin));
+            ofdm_packet(bin, :) = qam_symb;
+            ofdm_packet(nfft-bin+2,:) = conj(qam_symb);
         end
     end
 end
