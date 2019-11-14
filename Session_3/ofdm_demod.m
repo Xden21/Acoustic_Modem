@@ -1,4 +1,4 @@
-function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, channel_response,trainblock)
+function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, trainblock)
     %Bookkeeping
     if mod(nfft,2) ~= 0
         error('fft size must be an even number')
