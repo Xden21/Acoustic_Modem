@@ -29,19 +29,22 @@ function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, chann
         end
     end
     
-    % For the frequencies where the trainblock was zero (exept for DC and
-    % nyquist, interpolate)
-    
+    % Interpolate frequency response
     time_domain_channel_resp = ifft(est_channel_freq, nfft);
-    time_domain_channel_resp_filt = [time_domain_channel_resp(1:end/2) zeros(1,length(time_domain_channel_resp)/2)];
+    figure;
+    plot(time_domain_channel_resp);
+    window = ones(length(time_domain_channel_resp)/2, 1);
+%    plot(window);
+    time_domain_channel_resp_filt = [time_domain_channel_resp(1:end/2).*window.', zeros(1,length(time_domain_channel_resp)/2)];
     plot(time_domain_channel_resp);
     
     est_channel_freq = 2*fft(time_domain_channel_resp_filt, nfft);
-    plot(abs(est_channel_freq));
-    
+    est_channel_freq(1) = 0;
+    est_channel_freq(nfft/2+1) = 0;
+  %  est_channel_freq(1:2:end) = new_est_channel_freq(1:2:end);
     for i = 1:cLen
         if est_channel_freq(i) ~= 0
-            inv_channel_freq(i) = 1/est_channel_freq(i);
+            inv_channel_freq(i) = est_channel_freq(i).^(-1);
         end
     end
     

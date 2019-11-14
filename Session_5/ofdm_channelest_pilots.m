@@ -1,5 +1,7 @@
 load IRest.mat;
-nfft = 80;  %DFT-size
+close all;
+
+nfft = 126;  %DFT-size
 prefix_length = 55;
 channel_order = 50;
 qam_dim = 4;
@@ -30,7 +32,7 @@ Rx = fftfilt(channel_model,Tx);
 received = qam_demod(output_sig, qam_dim);
 
 est_channel_model = ifft(calc_channel_freq_resp, nfft);
-
+figure;
 plot(abs(calc_channel_freq_resp));
 hold on;
 plot(abs(channel_freq_resp));
@@ -38,10 +40,11 @@ hold off;
 legend('estimated response','measured response')
 
 figure;
-plot(channel_model);
+plot(ifft(channel_freq_resp, nfft));
 hold on;
 plot(est_channel_model);
 hold off;
 legend('estimated response','measured response')
 
-ber(trainbits, received)
+sent_bits = qam_demod(trainblock_pilot, qam_dim);
+ber(sent_bits, received)
