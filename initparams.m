@@ -1,5 +1,6 @@
 function [simin,nbsecs,fs,sync_pulse] = initparams(toplay,fs,ir_length)
-    sync_pulse = [1 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0];
+    x = 0:1/fs:0.1;
+    sync_pulse = sin(2*pi*500*x) +sin(2*pi*1000*x)+sin(2*pi*2000*x);
     toplay = [sync_pulse,zeros(1,ir_length),toplay']';
     % Rescale to interval between -1 and 1 (ex. 2.7)
     rescale_singal(toplay);
