@@ -1,4 +1,4 @@
-function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, channel_response,trainblock)
+function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, trainblock)
     %Bookkeeping
     if mod(nfft,2) ~= 0
         error('fft size must be an even number')
@@ -22,10 +22,10 @@ function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, chann
     [cLen,rLen] = size(ofdm_packet);
     est_channel_freq = zeros(1,cLen);
     inv_channel_freq = zeros(1,cLen);
-    for i = 1:cLen
+    for i = 2:2:cLen
         if full_train_block(i) ~= 0
             x_column = full_train_block(i)*ones(rLen,1);
-            est_channel_freq(i) = (x_column\transpose((ofdm_packet(i,:))));
+            est_channel_freq(i) = (x_column\(ofdm_packet(i,:).'));
         end
     end
     
@@ -44,32 +44,24 @@ function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, chann
   %  est_channel_freq(1:2:end) = new_est_channel_freq(1:2:end);
     for i = 1:cLen
         if est_channel_freq(i) ~= 0
-            inv_channel_freq(i) = est_channel_freq(i).^(-1);
+            inv_channel_freq(i) = 1.0/est_channel_freq(i);
         end
     end
     
     %Step 3: Equalize
     
     
-%     
-%     if nargin == 4
-        %Invert channel_response
-%         channel_response = est_channel_freq.^(-1);
+    H = diag(inv_channel_freq);
 
-        H = diag(inv_channel_freq);
-
-        %Equalize
-        ofdm_packet_eq = H * ofdm_packet;
-%     else
-%         ofdm_packet_eq = ofdm_packet;
-%     end
+    %Equalize
+    ofdm_packet_eq = H * ofdm_packet;
     
     %Step 4: Unpack ofdm frames to QAM symbol stream
     
     % Basic Implementation
     
     %Make empty signal stream
-    qam_sig_padded = zeros(1, nfft*elements_per_frame);
+    qam_sig_padded = zeros(1, frame_count*elements_per_frame);
     
     for frame_i=1:frame_count
         %Pull out original QAM signal values from each frame and add to

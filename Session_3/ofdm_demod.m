@@ -25,7 +25,7 @@ function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, train
     for i = 1:cLen
         if full_train_block(i) ~= 0
             x_column = full_train_block(i)*ones(rLen,1);
-            est_channel_freq(i) = (x_column\transpose((ofdm_packet(i,:))));
+            est_channel_freq(i) = (x_column\(ofdm_packet(i,:).'));
             inv_channel_freq(i) = 1/est_channel_freq(i);
         end
     end
@@ -51,7 +51,7 @@ function [sig,est_channel_freq] = ofdm_demod(mod_sig, nfft, prefix_length, train
     % Basic Implementation
     
     %Make empty signal stream
-    qam_sig_padded = zeros(1, nfft*elements_per_frame);
+    qam_sig_padded = zeros(1, frame_count*elements_per_frame);
     
     for frame_i=1:frame_count
         %Pull out original QAM signal values from each frame and add to

@@ -1,8 +1,8 @@
 load IRest.mat;
 close all;
 
-nfft = 126;  %DFT-size
-prefix_length = 55;
+nfft = 500;  %DFT-size
+prefix_length = 100;
 channel_order = 50;
 qam_dim = 4;
 
@@ -13,11 +13,11 @@ trainbits = randi([0 1],1,qam_dim*(nfft/2-1));
 trainblock = qam_mod(trainbits,qam_dim);
 
 % For pilot tones, only use the odd half (so set even half to zero)
-trainblock_pilot = zeros(size(trainblock));
-trainblock_pilot(1:2:end) = trainblock(1:2:end);
+% trainblock_pilot = zeros(size(trainblock));
+% trainblock_pilot(1:2:end) = trainblock(1:2:end);
 
 %make a sequence of 100 trainingblocks
-ofdm_train_seq = repmat(trainblock_pilot,1,100);
+ofdm_train_seq = repmat(trainblock,1,100);
 %ofdm of train seq
 Tx = ofdm_mod(ofdm_train_seq,nfft,prefix_length);
 
@@ -28,7 +28,7 @@ channel_freq_resp = fft(channel_model, nfft);
 Rx = fftfilt(channel_model,Tx);
 
 % Demodulaten using 
-[output_sig,calc_channel_freq_resp] = ofdm_demod_pilot(Rx,nfft,prefix_length,channel_freq_resp,trainblock_pilot);
+[output_sig,calc_channel_freq_resp] = ofdm_demod_pilot(Rx,nfft,prefix_length,trainblock);
 received = qam_demod(output_sig, qam_dim);
 
 est_channel_model = ifft(calc_channel_freq_resp, nfft);
@@ -40,11 +40,18 @@ hold off;
 legend('estimated response','measured response')
 
 figure;
+plot(angle(calc_channel_freq_resp));
+hold on;
+plot(angle(channel_freq_resp));
+hold off;
+legend('estimated response','measured response')
+
+figure;
 plot(ifft(channel_freq_resp, nfft));
 hold on;
 plot(est_channel_model);
 hold off;
 legend('estimated response','measured response')
 
-sent_bits = qam_demod(trainblock_pilot, qam_dim);
+sent_bits = qam_demod(trainblock, qam_dim);
 ber(sent_bits, received)
