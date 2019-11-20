@@ -1,14 +1,14 @@
 %Calculate impuls response.
 
 fs = 16000;
-%sig = rand(1,2*fs);
-%sig(1) = 1;
-%[simin,nbsecs,fs] = initparams(sig,fs);
+sig = rand(1,2*fs);
+sig(1) = 1;
+[simin,nbsecs,fs] = initparams_old(sig',fs);
 
-%sim('recplay');
-%out = simout.signals.values;
+sim('recplay');
+out = simout.signals.values;
 
-row = [sig(1),zeros(1,249)];
+row = [sig(1),zeros(1,511)];
 xToep = toeplitz(sig,row);
 
 

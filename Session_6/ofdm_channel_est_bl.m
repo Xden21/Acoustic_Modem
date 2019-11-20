@@ -1,8 +1,11 @@
+% This script does the channel estimation, with support of the function
+% that can do bitloading
+
 load IRest.mat;
 %close all;
 nfft = 512;  %DFT-size
-prefix_length = 350;
-channel_order = 250;
+prefix_length = 60;
+channel_order = 50;
 qam_dim = 4;
 fs = 16000;
 %random bitstream
@@ -12,21 +15,27 @@ trainbits = randi([0 1],1,qam_dim*(nfft/2-1));
 trainblock = qam_mod(trainbits,qam_dim);
 
 %make a sequence of 100 trainingblocks
-ofdm_train_seq = repmat(trainblock,1,100);
+ofdm_train_seq = repmat(trainbits,1,100);
 %ofdm of train seq
-Tx = ofdm_mod(ofdm_train_seq,nfft,prefix_length);
+qam_orders = no_bit_loading(nfft, qam_dim);
+Tx = ofdm_mod_bl(ofdm_train_seq,qam_orders,prefix_length);
 [simin,nbsecs,fs,sync_pulse] = initparams(Tx,fs,channel_order);
 sim('recplay');
 sigout = simout.signals.values;
 Rx =alignIO(sigout,sync_pulse,channel_order);
 %part of channel model
-figure; plot(sigout); title('received');
-figure;
-plot(Rx); hold on; plot(Tx); hold off; legend('Rx', 'Tx'); title('aligned');
+% channel_model = h(1:channel_order);
+% channel_freq_resp = fft(channel_model, nfft);
+% 
+% Rx = fftfilt(channel_model, Tx);
+
+% figure; plot(sigout); title('received');
+% figure;
+% plot(Rx); hold on; plot(Tx); hold off; legend('Rx', 'Tx'); title('aligned');
 
 % Demodulaten using 
-[output_sig,calc_channel_freq_resp] = ofdm_demod(Rx,nfft,prefix_length,trainblock);
-received = qam_demod(output_sig, qam_dim);
+[received,calc_channel_freq_resp] = ofdm_demod_bl(Rx,qam_orders,prefix_length,trainblock);
+%received = qam_demod(output_sig, qam_dim);
 figure;
 plot(abs(output_sig(50:100)));
 hold on;
@@ -63,4 +72,4 @@ xlabel('f (Hz)')
 ylabel('P1 (dB)')
 ylim([-100,-20]);
 
-ber(trainbits, received) 
+ber(trainbits, received') 
