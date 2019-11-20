@@ -8,7 +8,7 @@ function [rxQamStream,channel_est] = ofdm_demod(mod_sig, nfft, prefix_length, tr
     
     
     %Step 1: parallelize the incoming signal.
-    padding_length = nfft+prefix_length - mod(length(mod_sig),nfft+prefix_length);
+    padding_length = mod(nfft+prefix_length - mod(length(mod_sig),nfft+prefix_length), nfft+prefix_length);
     mod_sig = [mod_sig;zeros(padding_length,1)];
     frame_count = length(mod_sig)/(nfft+prefix_length);   
     ofdm_td = reshape(mod_sig, nfft+prefix_length, frame_count);
