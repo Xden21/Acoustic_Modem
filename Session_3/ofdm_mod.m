@@ -15,11 +15,12 @@ function mod_sig = ofdm_mod(sig,trainblock, nfft, prefix_length,Lt,Ld)
     sig_padded = [sig, zeros(1,padcount)];
     
    %we can devide it in frames according to Lt and Ld
-    data_windows = ceil(length(sig_padded)/elements_per_frame/Ld);
-    data_with_tr = zeros(1,elements_per_frame*(Lt+Ld)*(data_windows));
-    frames_to_send = length(sig_padded)/elements_per_frame;
+    data_windows = ceil(length(sig_padded)/elements_per_frame/Ld); %amount of times we send a pack of dataframes
+    frames_to_send = length(sig_padded)/elements_per_frame; %resting amount of frames
+    data_with_tr = zeros(1,elements_per_frame*(frames_to_send+data_windows*Lt));
+    
     for i = 1:data_windows
-        if frames_to_send < Ld
+        if frames_to_send < Ld  %last data_window doesnt contain Ld frames
             data_with_tr((Ld+Lt)*elements_per_frame*(i-1)+1:(Ld+Lt)*elements_per_frame*(i-1)+elements_per_frame*frames_to_send + Lt*elements_per_frame) = [repmat(trainblock,1,Lt),sig_padded((i-1)*(Ld*elements_per_frame)+1:(i-1)*Ld*elements_per_frame+elements_per_frame*frames_to_send)];
         else
             data_with_tr((Ld+Lt)*elements_per_frame*(i-1)+1:(Ld+Lt)*elements_per_frame*i) = [repmat(trainblock,1,Lt),sig_padded((i-1)*(Ld*elements_per_frame)+1:i*Ld*elements_per_frame)];
