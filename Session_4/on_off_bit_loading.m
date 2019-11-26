@@ -1,8 +1,6 @@
 function qam_orders = on_off_bit_loading(channel_model,qam_order, channel_fraction)
     %ON_OFF_BIT_LOADING Calculates the qam_orders for a given channel
-    %model. The fraction is the relative amount of orders that are 'ON'.
-    %   Detailed explanation goes here
-
+    %model. The fraction is the relative amount of orders that are 'deleted'.
     % Choose which channels will be used.
     
     % Determine which frequency bins we want to use (we use magnitude to

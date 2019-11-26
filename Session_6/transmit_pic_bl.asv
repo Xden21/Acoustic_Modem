@@ -1,13 +1,13 @@
 load IRest.mat;
-nfft = 256;
+nfft = 512;
 qam_dim = 4;
 prefix_length =150;
-Lt = 6; %amount of training frames
+Lt = 5; %amount of training frames
 Ld = 30; %amount of data frames
 fs = 16000;
 channel_order = 60;
 
-BWUsage = 50;
+BW = 70;
 
 %% Channel Estimation
 %random bitstream
@@ -32,9 +32,12 @@ Rx =alignIO(sigout,sync_pulse,channel_order);
 channel_est_err = ber(trainbits, received')
 %% Calculate qam orders
 
-qam_orders = on_off_bit_loading(calc_channel_freq_resp, qam_dim,1- BWUsage/100);
+qam_orders = on_off_bit_loading(calc_channel_freq_resp, qam_dil
 
 %% Send picture with bitloading
+qam_orders = no_bit_loading(nfft, qam_dim);
+qam_orders(50) = 0;
+qam_orders(end-50+2) = 0;
 
 bitcount = 0;
 for i=1:nfft/2

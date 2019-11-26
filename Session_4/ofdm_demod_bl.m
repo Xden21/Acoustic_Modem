@@ -23,7 +23,7 @@ function [rxBitStream,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_
     %full_train_block = [0,trainblock.',0,fliplr(conj(trainblock.'))]; %extend with compl conj
     [cLen,rLen] = size(ofdm_packet);
     amount_of_train = ceil(rLen/(Lt+Ld));
-    last_block_ld = mod(rLen,Lt+Ld)-Lt;
+    last_block_ld = max(mod(rLen,Lt+Ld)-Lt,0);
     channel_est = zeros(cLen,amount_of_train);
     rxBitStream = [];
     for pack = 1:amount_of_train
@@ -45,7 +45,7 @@ function [rxBitStream,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_
         H = diag(inv_channel_freq);
 
         %Equalize
-        if pack == amount_of_train
+        if (pack == amount_of_train) && (last_block_ld~=0)
             data_pack_eq = H * ofdm_packet(:,(pack-1)*(Lt+Ld)+1+Lt:(pack-1)*(Lt+Ld)+last_block_ld+Lt);         
         else
             data_pack_eq = H * ofdm_packet(:,(pack-1)*(Lt+Ld)+1+Lt:pack*(Lt+Ld));

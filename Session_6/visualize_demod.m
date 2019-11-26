@@ -2,9 +2,7 @@
 transmit_pic_bl;
 
 %%
-%amount_of_packs = 16;           %NOG TE BEPALEN
 [bitStream, imageData, colorMap, imageSize, bitsPerPixel] = imagetobitstream('image.bmp');
-%nfft = 512;
 chan_freq_resp = abs(calc_channel_freq_resp(:,1));
 imp_responses = ifft(calc_channel_freq_resp,nfft);
 imp_respons = imp_responses(:,1);
@@ -36,19 +34,19 @@ imageRx = bitstreamtoimage(image_data(1:image_data_length), imageSize, bitsPerPi
 im_pl = image(imageRx); axis image; drawnow;
 title(['received image after seconds' num2str(send_time)]);
 for pack = 2:amount_of_packs
-pause(send_time);
-chan_freq_resp = abs(calc_channel_freq_resp(:,pack));
-imp_respons = imp_responses(:,pack);
-refreshdata
+    pause(send_time);
+    chan_freq_resp = abs(calc_channel_freq_resp(:,pack));
+    imp_respons = imp_responses(:,pack);
+    refreshdata
 
 
-subplot(2,2,4);
-colormap(colorMap);
-if pack == amount_of_packs
-    imageRx = bitstreamtoimage(image_data, imageSize, bitsPerPixel);
-else
-    imageRx = bitstreamtoimage(image_data(1:pack*image_data_length), imageSize, bitsPerPixel);
-end
-im_pl = image(imageRx); axis image; drawnow;
-title(['received image after ' num2str((pack+1)*send_time) ' seconds']);
+    subplot(2,2,4);
+    colormap(colorMap);
+    if pack == amount_of_packs
+        imageRx = bitstreamtoimage(image_data, imageSize, bitsPerPixel);
+    else
+        imageRx = bitstreamtoimage(image_data(1:pack*image_data_length), imageSize, bitsPerPixel);
+    end
+    im_pl = image(imageRx); axis image; drawnow;
+    title(['received image after ' num2str((pack+1)*send_time) ' seconds']);
 end

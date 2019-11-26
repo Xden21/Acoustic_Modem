@@ -18,10 +18,10 @@ qamStream = qam_mod(bitStream, qam_dim);
 
 %test for BER 0;
 [simin,nbsecs,fs,sync_pulse] = initparams(ofdmStream,fs,channel_order);
-sigout = fftfilt(h(1:channel_order),simin(:,1));
+%sigout = fftfilt(h(1:channel_order),simin(:,1));
 %with accoustic channel
-%sim('recplay');
-%sigout = simout.signals.values;
+sim('recplay');
+sigout = simout.signals.values;
 Rx =alignIO(sigout,sync_pulse,channel_order);
 Rx =Rx(1:length(ofdmStream));
 [output_sig,calc_channel_freq_resp] = ofdm_demod(Rx,nfft,prefix_length,trainblock,Lt,Ld);
