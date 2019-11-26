@@ -2,7 +2,7 @@ load IRest.mat;
 nfft = 256;
 qam_dim = 4;
 prefix_length =150;
-Lt = 6; %amount of training frames
+Lt = 2; %amount of training frames
 Ld = 30; %amount of data frames
 fs = 16000;
 channel_order = 120;

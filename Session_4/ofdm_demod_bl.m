@@ -1,4 +1,4 @@
-function [rxBitStream,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_length, trainblock,Lt,Ld)
+function [rxBitStream,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_length, trainframe,Lt,Ld)
     %Bookkeeping
     nfft = length(qam_orders);
     
@@ -20,7 +20,7 @@ function [rxBitStream,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_
     ofdm_packet = fft(ofdm_td, nfft);
     
     %calculate transfer function
-    full_train_block = [0,trainblock.',0,fliplr(conj(trainblock.'))]; %extend with compl conj
+    %full_train_block = [0,trainblock.',0,fliplr(conj(trainblock.'))]; %extend with compl conj
     [cLen,rLen] = size(ofdm_packet);
     amount_of_train = ceil(rLen/(Lt+Ld));
     last_block_ld = mod(rLen,Lt+Ld)-Lt;
@@ -30,8 +30,8 @@ function [rxBitStream,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_
         est_channel_freq = zeros(1,cLen);
         inv_channel_freq = zeros(1,cLen);
         for i = 1:cLen
-            if full_train_block(i) ~= 0
-                x_column = full_train_block(i)*ones(Lt,1);
+            if trainframe(i) ~= 0
+                x_column = trainframe(i)*ones(Lt,1);
                 est_channel_freq(i) = (x_column\(ofdm_packet(i,(pack-1)*(Lt+Ld)+1:(pack-1)*(Lt+Ld)+Lt).'));
                 inv_channel_freq(i) = 1/est_channel_freq(i);
             end
