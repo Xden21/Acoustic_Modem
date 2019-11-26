@@ -3,7 +3,7 @@
 
 load IRest.mat;
 %close all;
-nfft = 256;  %DFT-size
+nfft = 1024;  %DFT-size
 prefix_length = 60;
 channel_order = 50;
 qam_dim = 4;
@@ -34,29 +34,29 @@ Rx = fftfilt(channel_model, Tx);
 % Demodulaten using 
 [received,calc_channel_freq_resp] = ofdm_demod_bl_pilot(Rx,qam_orders,prefix_length,pilot_symbs);
 %received = qam_demod(output_sig, qam_dim);
-figure;
-plot(abs(output_sig(50:100)));
-hold on;
-plot(abs(ofdm_train_seq(50:100)));
-hold off;
-legend('output_sig','input sig')
-est_channel_model = ifft(calc_channel_freq_resp, nfft);
-%----------------legende-omgekeerd????---------------
-figure;
-plot(abs(calc_channel_freq_resp));
-title('calculated channel freq');
-hold on;
-plot(abs(channel_freq_resp));
-hold off;
-legend('estimated response','measured response')
-
-figure;
- plot(channel_model);
- hold on;
- plot(est_channel_model);
- title('channel model');
- hold off;
- legend('estimated response','measured response')
+% figure;
+% plot(abs(output_sig(50:100)));
+% hold on;
+% plot(abs(ofdm_train_seq(50:100)));
+% hold off;
+% legend('output_sig','input sig')
+% est_channel_model = ifft(calc_channel_freq_resp, nfft);
+% %----------------legende-omgekeerd????---------------
+% figure;
+% plot(abs(calc_channel_freq_resp));
+% title('calculated channel freq');
+% hold on;
+% plot(abs(channel_freq_resp));
+% hold off;
+% legend('estimated response','measured response')
+% 
+% figure;
+%  plot(channel_model);
+%  hold on;
+%  plot(est_channel_model);
+%  title('channel model');
+%  hold off;
+%  legend('estimated response','measured response')
 % figure;
 % L = length(est_channel_model);
 % Y = fft(est_channel_model);
@@ -70,4 +70,4 @@ figure;
 % ylabel('P1 (dB)')
 % ylim([-100,-20]);
 
-ber(dataset, received') 
+ber(dataset, received) 

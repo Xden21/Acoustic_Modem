@@ -7,7 +7,7 @@ Ld = 30; %amount of data frames
 fs = 16000;
 channel_order = 60;
 
-BWUsage = 50;
+BWUsage = 100;
 
 %% Channel Estimation
 %random bitstream
@@ -57,7 +57,7 @@ trainbits = randi([0 1],1,bitcount);
 sim('recplay');
 sigout = simout.signals.values;
 Rx =alignIO(sigout,sync_pulse,channel_order);
-Rx =Rx(1:length(ofdmStream));
+Rx =Rx(1:length(ofdmStream)+50);
 [output_sig,calc_channel_freq_resp] = ofdm_demod_bl(Rx,qam_orders,prefix_length,trainblock,Lt,Ld);
 received = output_sig;
 ber(bitStream',received)
