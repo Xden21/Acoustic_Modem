@@ -40,52 +40,46 @@ function [rxQamStream,channel_est] = ofdm_demod(mod_sig, nfft, prefix_length, tr
 
         %Step 3: Equalize
 
-
-    %     
-    %     if nargin == 4
-            %Invert channel_response
-    %         channel_response = est_channel_freq.^(-1);
-
-            H = diag(inv_channel_freq);
+        H = diag(inv_channel_freq);
 
             %Equalize
             %ofdm_packet_eq = H * ofdm_packet;
-     if pack == amount_of_train
-         data_pack_eq = H * ofdm_packet(:,(pack-1)*(Lt+Ld)+1+Lt:(pack-1)*(Lt+Ld)+last_block_ld+Lt);         
-     else
-         data_pack_eq = H * ofdm_packet(:,(pack-1)*(Lt+Ld)+1+Lt:pack*(Lt+Ld));
-     end
-          
-    %     else
-    %         ofdm_packet_eq = ofdm_packet;
-    %     end
+         if pack == amount_of_train
+             data_pack_eq = H * ofdm_packet(:,(pack-1)*(Lt+Ld)+1+Lt:(pack-1)*(Lt+Ld)+last_block_ld+Lt);         
+         else
+             data_pack_eq = H * ofdm_packet(:,(pack-1)*(Lt+Ld)+1+Lt:pack*(Lt+Ld));
+         end
 
-        %Step 4: Unpack ofdm frames to QAM symbol stream
+        %     else
+        %         ofdm_packet_eq = ofdm_packet;
+        %     end
 
-        % Basic Implementation
+            %Step 4: Unpack ofdm frames to QAM symbol stream
 
-        
-    if pack == amount_of_train
-        %Make empty signal stream
-        qam_sig_padded = zeros(1, last_block_ld*elements_per_frame);
-        for frame_i=1:last_block_ld
-            %Pull out original QAM signal values from each frame and add to
-            %signal stream
-            qam_sig_padded((frame_i-1)*elements_per_frame + 1:frame_i*elements_per_frame) = data_pack_eq(2:elements_per_frame+1, frame_i);
+            % Basic Implementation
+
+
+        if pack == amount_of_train
+            %Make empty signal stream
+            qam_sig_padded = zeros(1, last_block_ld*elements_per_frame);
+            for frame_i=1:last_block_ld
+                %Pull out original QAM signal values from each frame and add to
+                %signal stream
+                qam_sig_padded((frame_i-1)*elements_per_frame + 1:frame_i*elements_per_frame) = data_pack_eq(2:elements_per_frame+1, frame_i);
+            end
+            % Remove padding?
+            rxQamStream((Ld*elements_per_frame)*(pack-1)+1:(Ld*elements_per_frame)*(pack-1) + elements_per_frame*last_block_ld) = qam_sig_padded;
+        else
+            qam_sig_padded = zeros(1, Ld*elements_per_frame);
+            for frame_i=1:Ld
+                %Pull out original QAM signal values from each frame and add to
+                %signal stream
+                qam_sig_padded((frame_i-1)*elements_per_frame + 1:frame_i*elements_per_frame) = data_pack_eq(2:elements_per_frame+1, frame_i);
+            end
+
+            % Remove padding?
+            rxQamStream((Ld*elements_per_frame)*(pack-1)+1:(Ld*elements_per_frame)*pack) = qam_sig_padded;
         end
-        % Remove padding?
-        rxQamStream((Ld*elements_per_frame)*(pack-1)+1:(Ld*elements_per_frame)*(pack-1) + elements_per_frame*last_block_ld) = qam_sig_padded;
-    else
-        qam_sig_padded = zeros(1, Ld*elements_per_frame);
-        for frame_i=1:Ld
-            %Pull out original QAM signal values from each frame and add to
-            %signal stream
-            qam_sig_padded((frame_i-1)*elements_per_frame + 1:frame_i*elements_per_frame) = data_pack_eq(2:elements_per_frame+1, frame_i);
-        end
-    
-        % Remove padding?
-        rxQamStream((Ld*elements_per_frame)*(pack-1)+1:(Ld*elements_per_frame)*pack) = qam_sig_padded;
-    end
     end
 end
 

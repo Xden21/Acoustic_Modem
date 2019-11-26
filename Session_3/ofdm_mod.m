@@ -1,4 +1,4 @@
-function mod_sig = ofdm_mod(sig,trainblock, nfft, prefix_length,Lt,Ld)
+function [mod_sig, data_windows] = ofdm_mod(sig,trainblock, nfft, prefix_length,Lt,Ld)
     %Bookkeeping
     if mod(nfft,2) ~= 0
         error('fft size must be an even number')

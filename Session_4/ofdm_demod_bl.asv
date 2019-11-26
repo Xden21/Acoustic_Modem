@@ -20,12 +20,13 @@ function [rxBitStream,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_
     ofdm_packet = fft(ofdm_td, nfft);
     
     %calculate transfer function
-    full_train_block = [0,trainblock.',0,fliplr(conj(trainblock.'))]; %extend with compl conj
+    full_train_block = [0,trainblock,0,fliplr(conj(trainblock))]; %extend with compl conj
     [cLen,rLen] = size(ofdm_packet);
     amount_of_train = ceil(rLen/(Lt+Ld));
     last_block_ld = mod(rLen,Lt+Ld)-Lt;
     channel_est = zeros(cLen,amount_of_train);
-    rxBitStream = [];
+    rxBitStream = zeros(1,amount_of_train*Ld*elements_per_frame*);
+    
     for pack = 1:amount_of_train
         est_channel_freq = zeros(1,cLen);
         inv_channel_freq = zeros(1,cLen);
@@ -53,6 +54,6 @@ function [rxBitStream,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_
         %Step 4: Unpack ofdm frames to QAM symbol stream
 
         % Use of unpack_ofdm_packet to support bit loading
-        rxBitStream =[rxBitStream unpack_ofdm_packet(data_pack_eq, qam_orders).'];
+        sig = unpack_ofdm_packet(data_pack_eq, qam_orders);
     end
 end

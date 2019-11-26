@@ -1,4 +1,4 @@
-function mod_sig = ofdm_mod_bl(sig, qam_orders, prefix_length)
+function [mod_sig ,trainblock, amount_of_packs]= ofdm_mod_bl(sig, qam_orders, prefix_length, trainblock, Lt, Ld)
     %Bookkeeping
     if mod(length(qam_orders),2) ~= 0
         error('fft size must be an even number')
@@ -6,7 +6,7 @@ function mod_sig = ofdm_mod_bl(sig, qam_orders, prefix_length)
         
     % Use of build_ofdm_packet to support bit loading
       
-    ofdm_packet =  build_ofdm_packet(sig, qam_orders);
+    [ofdm_packet, trainblock, amount_of_packs] =  build_ofdm_packet(sig, qam_orders, trainblock, Lt, Ld);
 
     %Step 3: calculate time domain values and serialize
     ofdm_td = ifft(ofdm_packet);
