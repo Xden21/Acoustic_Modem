@@ -1,5 +1,5 @@
 %%
-transmit_pic;
+transmit_pic_bl;
 
 %%
 %amount_of_packs = 16;           %NOG TE BEPALEN

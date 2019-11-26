@@ -8,7 +8,8 @@ fs = 16000;
 channel_order = 120;
 
 qam_orders = no_bit_loading(nfft, qam_dim);
-
+qam_orders(50) = 0;
+qam_orders(end-50+2) = 0;
 
 bitcount = 0;
 for i=1:nfft/2
@@ -33,5 +34,5 @@ sigout = fftfilt(h(1:channel_order),simin(:,1));
 Rx =alignIO(sigout,sync_pulse,channel_order);
 Rx =Rx(1:length(ofdmStream));
 [output_sig,calc_channel_freq_resp] = ofdm_demod_bl(Rx,qam_orders,prefix_length,trainblock,Lt,Ld);
-%received = qam_demod(output_sig, qam_dim);
-ber(bitStream',output_sig)
+received = output_sig;
+ber(bitStream',received)
