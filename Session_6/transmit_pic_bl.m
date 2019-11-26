@@ -1,11 +1,11 @@
 load IRest.mat;
-nfft = 256;
+nfft = 128;
 qam_dim = 4;
-prefix_length =150;
-Lt = 2; %amount of training frames
-Ld = 30; %amount of data frames
+prefix_length =100;
+Lt = 5; %amount of training frames
+Ld = 20; %amount of data frames
 fs = 16000;
-channel_order = 120;
+channel_order = 60;
 
 qam_orders = no_bit_loading(nfft, qam_dim);
 qam_orders(50) = 0;
