@@ -1,43 +1,38 @@
 load IRest.mat;
-nfft = 512;
-qam_dim = 4;
+nfft = 256;
+qam_dim = 6;
 prefix_length =150;
-Lt = 5; %amount of training frames
+Lt = 6; %amount of training frames
 Ld = 30; %amount of data frames
 fs = 16000;
 channel_order = 60;
-
-BW = 70;
+snr = 100;
 
 %% Channel Estimation
 %random bitstream
 trainbits = randi([0 1],1,qam_dim*(nfft/2-1));
 
-%qam modulated tr   aining block
+%qam modulated training block
 trainblock = qam_mod(trainbits,qam_dim);
 
 %make a sequence of 100 trainingblocks
 ofdm_train_seq = repmat(trainbits,1,100);
 %ofdm of train seq
 qam_orders = no_bit_loading(nfft, qam_dim);
-
 Tx = ofdm_mod_est(ofdm_train_seq,qam_orders,prefix_length);
 [simin,nbsecs,fs,sync_pulse] = initparams(Tx,fs,channel_order);
 %sigout = fftfilt(h(1:channel_order),simin(:,1));
 sim('recplay');
 sigout = simout.signals.values;
 Rx =alignIO(sigout,sync_pulse,channel_order);
-[received,calc_channel_freq_resp] = ofdm_demod_est(Rx,qam_orders,prefix_length,trainblock);
+[received,calc_channel_freq_resp,qam_seq] = ofdm_demod_est_adapt(Rx,qam_orders,prefix_length,trainblock);
 
 channel_est_err = ber(trainbits, received')
 %% Calculate qam orders
-
-qam_orders = on_off_bit_loading(calc_channel_freq_resp, qam_dil
-
+Pn = get_noise_power(qam_seq,calc_channel_freq_resp,fs,nfft);
+qam_orders = adaptive_bit_loading(calc_channel_freq_resp,Pn,qam_dim);
+plot(qam_orders);   
 %% Send picture with bitloading
-qam_orders = no_bit_loading(nfft, qam_dim);
-qam_orders(50) = 0;
-qam_orders(end-50+2) = 0;
 
 bitcount = 0;
 for i=1:nfft/2

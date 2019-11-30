@@ -18,7 +18,6 @@ function bitstream = unpack_ofdm_packet(ofdm_packet,qam_orders)
     
     % Unpack and demodulate ofdm_packet to bitstream
     bitstream = zeros(total_bits,1);
-    
     for bin = 1:nfft/2
         if qam_orders(bin) ~= 0
             if bin ~= 1

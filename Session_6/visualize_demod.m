@@ -1,7 +1,10 @@
-%%
+%%ON-OFF
 transmit_pic_bl;
-
 %%
+%Adaptive
+transmit_pic_adapt;
+%%
+
 [bitStream, imageData, colorMap, imageSize, bitsPerPixel] = imagetobitstream('image.bmp');
 chan_freq_resp = abs(calc_channel_freq_resp(:,1));
 imp_responses = ifft(calc_channel_freq_resp,nfft);
@@ -9,7 +12,7 @@ imp_respons = imp_responses(:,1);
 image_data = received(1:length(bitStream))';
 image_data_length  = ceil(length(image_data)/amount_of_packs);
 send_time = (Lt + Ld)*(nfft+prefix_length)/fs;
-
+    
 %plots
 
 subplot(2,2,1); %channel freq response 
