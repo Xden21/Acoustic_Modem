@@ -31,9 +31,7 @@ channel_est_err = ber(trainbits, received')
 %% Calculate qam orders
 Pn = get_noise_power(qam_seq,calc_channel_freq_resp,fs,nfft);
 qam_orders = adaptive_bit_loading(calc_channel_freq_resp,Pn,qam_dim);
-plot(Pn)
-figure;
-plot(qam_orders);
+plot(qam_orders);   
 %% Send picture with bitloading
 
 bitcount = 0;
