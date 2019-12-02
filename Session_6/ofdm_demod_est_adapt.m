@@ -1,4 +1,4 @@
-function [rxBitStream,est_channel_freq,qam_sequence] = ofdm_demod_est(mod_sig,  qam_orders, prefix_length, trainblock)
+function [rxBitStream,est_channel_freq,qam_sequence] = ofdm_demod_est_adapt(mod_sig,  qam_orders, prefix_length, trainblock)
     %Bookkeeping
     nfft = length(qam_orders);
     

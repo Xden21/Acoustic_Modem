@@ -1,6 +1,6 @@
 load IRest.mat;
 nfft = 256;
-qam_dim = 6;
+qam_dim = 4;
 prefix_length =150;
 Lt = 6; %amount of training frames
 Ld = 30; %amount of data frames
@@ -29,9 +29,12 @@ Rx =alignIO(sigout,sync_pulse,channel_order);
 
 channel_est_err = ber(trainbits, received')
 %% Calculate qam orders
-Pn = get_noise_power(qam_seq,calc_channel_freq_resp,fs,nfft);
+Pn = get_noise_power(Tx, Rx,calc_channel_freq_resp,fs,nfft);
 qam_orders = adaptive_bit_loading(calc_channel_freq_resp,Pn,qam_dim);
+figure;
 plot(qam_orders);   
+title('QAM orders')
+xlim([1 nfft]);
 %% Send picture with bitloading
 
 bitcount = 0;

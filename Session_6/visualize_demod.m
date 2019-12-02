@@ -1,8 +1,8 @@
 %%ON-OFF
-transmit_pic_bl;
+%%transmit_pic_bl;
 %%
 %Adaptive
-transmit_pic_adapt;
+%%transmit_pic_adapt;
 %%
 
 [bitStream, imageData, colorMap, imageSize, bitsPerPixel] = imagetobitstream('image.bmp');
