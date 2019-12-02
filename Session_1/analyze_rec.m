@@ -12,7 +12,7 @@ sig(1) = 1; %Used as anchor point to find start of signal
 
 
 % Rescales input! (see ex. 2.7)
-[simin,nbsecs,fs] = initparams(sig,fs);
+[simin,nbsecs,fs] = initparams_old(sig,fs);
 
 WhiteNoiseSignal = simin(:,1);
 

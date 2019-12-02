@@ -25,14 +25,21 @@ Tx = ofdm_mod_est(ofdm_train_seq,qam_orders,prefix_length);
 sim('recplay');
 sigout = simout.signals.values;
 Rx =alignIO(sigout,sync_pulse,channel_order);
-[received,calc_channel_freq_resp,qam_seq] = ofdm_demod_est_adapt(Rx,qam_orders,prefix_length,trainblock);
+[received,meas_calc_channel_freq_resp,qam_seq] = ofdm_demod_est_adapt(Rx,qam_orders,prefix_length,trainblock);
 
 channel_est_err = ber(trainbits, received')
 %% Calculate qam orders
-Pn = get_noise_power(Tx, Rx,calc_channel_freq_resp,fs,nfft);
-qam_orders = adaptive_bit_loading(calc_channel_freq_resp,Pn,qam_dim);
+Pn = get_noise_power(Rx,meas_calc_channel_freq_resp,fs,nfft);
+qam_orders = adaptive_bit_loading(meas_calc_channel_freq_resp,Pn,qam_dim);
 figure;
-plot(qam_orders);   
+plot(Pn)
+hold on;
+xlim([0,nfft]);
+plot([0,nfft] ,[0 0]);
+title('Noise Power')
+hold off;
+figure;
+plot(qam_orders);
 title('QAM orders')
 xlim([1 nfft]);
 %% Send picture with bitloading
