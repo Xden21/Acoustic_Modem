@@ -1,4 +1,4 @@
-function [sig,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_length, pilot_sims)
+function [sig,channel_est] = ofdm_demod_bl_pilot(mod_sig,  qam_orders, prefix_length, pilot_sims)
     %Bookkeeping
     nfft = length(qam_orders);
     

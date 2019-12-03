@@ -1,4 +1,4 @@
-function [ofdm_packet, trainframe, data_windows] = build_ofdm_packet_dd(bitstream,qam_orders, trainbits, Lt)
+function [ofdm_packet, trainframe] = build_ofdm_packet_dd(bitstream,qam_orders, trainbits, Lt)
     % Amount of frequency bins
     nfft = length(qam_orders);
     
@@ -60,16 +60,7 @@ function [ofdm_packet, trainframe, data_windows] = build_ofdm_packet_dd(bitstrea
         end
     end
     
-    data_windows = ceil(frame_count/Ld);
-    ofdm_packet = zeros(nfft, frame_count + Lt*data_windows);
-    
-    frames_to_send = mod(frame_count, Ld);
-    for pack=1:data_windows
-        if(pack==data_windows && frames_to_send ~= 0)
-            ofdm_packet(:,(Ld+Lt)*(pack - 1)+1: (Ld+Lt)*(pack - 1)+(frames_to_send+Lt)) = [repmat(trainframe,1,Lt), ofdm_data_packet(:,(Ld)*(pack - 1)+1:(Ld)*(pack - 1)+(frames_to_send))];
-        else
-            ofdm_packet(:,(Ld+Lt)*(pack - 1)+1: (Ld+Lt)*pack) = [repmat(trainframe,1,Lt), ofdm_data_packet(:,(Ld)*(pack - 1)+1: (Ld)*pack)];
-        end
-    end
+    ofdm_packet = [repmat(trainframe, 1, Lt) ofdm_data_packet];
+        
 end
 

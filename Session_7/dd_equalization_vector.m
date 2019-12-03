@@ -28,8 +28,9 @@ x_tilde(:,1) = Y(:,1).*Wk';
 x_hat(:,1) = decision_device(x_tilde(:,1),qam_dim);
 for L = 1:qam_symbol_length-1
     x_tilde(:,L+1) = Y(:,L+1).*conj(w_values(:,L));
-    x_hat(:,L+1)= decision_device(x_tilde(:,L+1),qam_dim);
-    w_values(:,L+1) = w_values(:,L)+ mu./(alpha + conj(Y(:,L+1)).*Y(:,L+1)).*Y(:,L+1).*conj(x_hat(:,L+1) - conj(w_values(:,L)).*Y(:,L+1));
+   % x_hat(:,L+1)= decision_device(x_tilde(:,L+1),qam_dim);
+   % w_values(:,L+1) = w_values(:,L)+ mu./(alpha + conj(Y(:,L+1)).*Y(:,L+1)).*Y(:,L+1).*conj(x_hat(:,L+1) - conj(w_values(:,L)).*Y(:,L+1));
+   [w_values(:,L+1), x_hat(:,L+1)] = adaptive_filter_update(w_values(:,L),  Y(:,L+1), mu, alpha, qam_dim);
 end
 errors = abs(x_hat-x_tilde);
 figure;
