@@ -40,10 +40,7 @@ end
 
 %% Send picture with bitloading
 
-bitcount = 0;
-for i=1:nfft/2
-    bitcount = bitcount + qam_orders(i);
-end
+bitcount = sum(qam_orders(1:nfft/2))
 trainbits = randi([0 1],1,bitcount);
 
 %qam modulated training block
@@ -52,7 +49,7 @@ trainbits = randi([0 1],1,bitcount);
 %get image data.
 [bitStream, imageData, colorMap, imageSize, bitsPerPixel] = imagetobitstream('image.bmp');
 %qamStream = qam_mod(bitStream, qam_dim);
-[ofdmStream, trainblock,amount_of_packs] = ofdm_mod_bl(bitStream,qam_orders,prefix_length,trainbits,Lt,Ld);
+[ofdmStream, trainblock,amount_of_packs] = ofdm_mod_bl_dd(bitStream,qam_orders,prefix_length,trainbits,Lt,Ld);
 
 %test for BER 0;
 [simin,nbsecs,fs,sync_pulse] = initparams(ofdmStream,fs,channel_order);
@@ -61,7 +58,7 @@ trainbits = randi([0 1],1,bitcount);
 sim('recplay');
 sigout = simout.signals.values;
 Rx =alignIO(sigout,sync_pulse,channel_order);
-Rx =Rx(1:length(ofdmStream)+50);
-[output_sig,calc_channel_freq_resp] = ofdm_demod_bl(Rx,qam_orders,prefix_length,trainblock,Lt,Ld);
+Rx =Rx(1:length(ofdmStream)+20);
+[output_sig,calc_channel_freq_resp] = ofdm_demod_bl_dd(Rx,qam_orders,prefix_length,trainblock,Lt,Ld);
 received = output_sig;
 ber(bitStream',received)
