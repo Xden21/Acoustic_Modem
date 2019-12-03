@@ -7,7 +7,7 @@ Ld = 30; %amount of data frames
 fs = 16000;
 channel_order = 60;
 
-%BWUsage = 100;
+BWUsage = 100;
 
 %% Channel Estimation
 %random bitstream
