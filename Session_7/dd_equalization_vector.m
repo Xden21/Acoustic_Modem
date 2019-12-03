@@ -2,7 +2,7 @@ close all;
 qam_symbol_length = 1000;
 qam_dim = 4;
 delta = [-0.25-.25i, 0.01+0.1i];
-snr = inf;
+snr = 40;
 mu = .3;
 alpha = 5;
 %generate random bit sequence
