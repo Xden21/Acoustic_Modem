@@ -14,7 +14,8 @@ H2 = fft(channel_2, nfft);
 H1_2 = sqrt(abs(H1).^2 + abs(H2).^2);
 
 [a, b] = fixed_transmitter_side_beamformer(channel_1, channel_2, nfft);
-
+%b = zeros(size(a));
+%a = ones(size(b));
 figure;
 hold on;plot((abs(H1))); plot((abs(H2))); plot((abs(H1_2))); hold off;
 title('H^1, H^2, H^{1+2}');
@@ -37,6 +38,7 @@ trainbits = randi([0 1],1,bitcount);
 sigout1 = fftfilt(channel_1, ofdmStream1);
 sigout2 = fftfilt(channel_2, ofdmStream2);
 sigout = sigout1 + sigout2;
+sigout = awgn(sigout,30);
 
 [output_sig,calc_channel_freq_resp] = ofdm_demod_bl(sigout,qam_orders,prefix_length,trainblock,Lt,Ld);
 received = output_sig;
