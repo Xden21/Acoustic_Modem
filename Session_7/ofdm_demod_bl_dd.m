@@ -49,7 +49,7 @@ function [sig,channel_est] = ofdm_demod_bl_dd(mod_sig,  qam_orders, prefix_lengt
         [adaptive_filter_weights(:,packet+1), ofdm_data_packet_eq(:,packet+1)] = adaptive_filter_update(adaptive_filter_weights(:,packet),  ofdm_packet(:,Lt+packet+1), mu, alpha, qam_orders);
         for i = 1:nfft
             if(adaptive_filter_weights(i, packet+1) ~= 0)
-                channel_est(i, packet+1) = 1/conj(adaptive_filter_weights(1,packet+1));
+                channel_est(i, packet+1) = 1/conj(adaptive_filter_weights(i,packet+1));
             end
         end
     end

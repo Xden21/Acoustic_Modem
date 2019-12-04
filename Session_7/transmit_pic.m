@@ -2,7 +2,12 @@ load IRest.mat;
 nfft = 256;
 qam_dim = 4;
 prefix_length =150;
-Lt = 6; %amount of training frames
+
+% Filter params
+Lt = 10; %amount of training frames
+mu = 0.8;
+alpha = 0.7;
+
 fs = 16000;
 channel_order = 60;
 
@@ -52,13 +57,14 @@ trainbits = randi([0 1],1,bitcount);
 
 %test for BER 0;
 [simin,nbsecs,fs,sync_pulse] = initparams(ofdmStream,fs,channel_order);
-sigout = fftfilt(h(1:channel_order),simin(:,1));
-sigout = awgn(sigout, 40);
+%sigout = fftfilt(h(1:channel_order),simin(:,1));
+%sigout = awgn(sigout, 40);
 %with accoustic channel
-%sim('recplay');
-%sigout = simout.signals.values;
+sim('recplay');
+disp('transmsission finished')
+sigout = simout.signals.values;
 Rx =alignIO(sigout,sync_pulse,channel_order);
 Rx =Rx(1:length(ofdmStream)+20);
-[output_sig,calc_channel_freq_resp] = ofdm_demod_bl_dd(Rx,qam_orders,prefix_length,trainblock,Lt, 0.3, 5);
+[output_sig,calc_channel_freq_resp] = ofdm_demod_bl_dd(Rx,qam_orders,prefix_length,trainblock,Lt, mu, alpha);
 received = output_sig;
 ber(bitStream,received)
