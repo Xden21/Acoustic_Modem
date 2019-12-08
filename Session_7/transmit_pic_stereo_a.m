@@ -32,6 +32,6 @@ sigout2 = fftfilt(channel_2, ofdmStream2);
 sigout = sigout1 + sigout2;
 sigout = awgn(sigout,30);
 
-[output_sig,calc_channel_freq_resp] = ofdm_demod_bl(sigout,qam_orders,prefix_length,trainblock,Lt,Ld);
+[output_sig,calc_channel_freq_resp] = ofdm_demod_bl(sigout,qam_orders,prefix_length,trainblock,Lt,Ld); %no need for the stereo version, it's the same
 received = output_sig;
 ber(bitStream',received)

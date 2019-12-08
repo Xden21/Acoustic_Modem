@@ -18,18 +18,21 @@ function [rxBitStream,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_
     ofdm_td = ofdm_td(prefix_length+1:end,:);
     
     ofdm_packet = fft(ofdm_td, nfft);
-    
     %calculate transfer function
     %full_train_block = [0,trainblock.',0,fliplr(conj(trainblock.'))]; %extend with compl conj
     [cLen,rLen] = size(ofdm_packet);
-    amount_of_train = ceil(rLen/(Lt+Ld));
+    if (Ld == 0)
+        amount_of_train = 2;
+    else
+        amount_of_train = ceil(rLen/(Lt+Ld));
+    end
     last_block_ld = max(mod(rLen,Lt+Ld)-Lt,0);
     channel_est = zeros(cLen,amount_of_train);
     rxBitStream = [];
     for pack = 1:amount_of_train
         est_channel_freq = zeros(1,cLen);
         inv_channel_freq = zeros(1,cLen);
-        for i = 1:cLen
+        for i = 2:cLen
             if trainframe(i) ~= 0
                 x_column = trainframe(i)*ones(Lt,1);
                 est_channel_freq(i) = (x_column\(ofdm_packet(i,(pack-1)*(Lt+Ld)+1:(pack-1)*(Lt+Ld)+Lt).'));
@@ -40,7 +43,9 @@ function [rxBitStream,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_
 
         %Step 3: Equalize
 
-
+    if (Ld ==0)
+        rxBitStream = 0;
+    else
 
         H = diag(inv_channel_freq);
 
@@ -54,5 +59,6 @@ function [rxBitStream,channel_est] = ofdm_demod_bl(mod_sig,  qam_orders, prefix_
 
         % Use of unpack_ofdm_packet to support bit loading
         rxBitStream =[rxBitStream unpack_ofdm_packet(data_pack_eq, qam_orders).'];
+    end
     end
 end
