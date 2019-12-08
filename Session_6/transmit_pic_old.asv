@@ -18,7 +18,7 @@ if(BWUsage ~=100)
     trainblock = qam_mod(trainbits,qam_dim);
 
     %make a sequence of 100 trainingblocks
-    ofdm_train_seq = repmat(trainbits,1,2);
+    ofdm_train_seq = repmat(trainbits,1,100);
     %ofdm of train seq
     qam_orders = no_bit_loading(nfft, qam_dim);
 
@@ -28,7 +28,6 @@ if(BWUsage ~=100)
     %sim('recplay');
     %sigout = simout.signals.values;
     Rx =alignIO(sigout,sync_pulse,channel_order);
-    Rx = Rx(1:length(Tx)+20);
     [received,calc_channel_freq_resp] = ofdm_demod_est(Rx,qam_orders,prefix_length,trainblock);
 
     channel_est_err = ber(trainbits, received')
@@ -37,7 +36,7 @@ if(BWUsage ~=100)
     hold on;
     plot(abs(calc_channel_freq_resp));
     hold off;
-    legend('measured', 'estimated');
+    legend('')
     qam_orders = on_off_bit_loading(calc_channel_freq_resp, qam_dim,1- BWUsage/100);
 else
     qam_orders = no_bit_loading(nfft,qam_dim);

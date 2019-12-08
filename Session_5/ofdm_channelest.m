@@ -10,14 +10,16 @@ trainbits = randi([0 1],1,qam_dim*(nfft/2-1));
 
 %qam modulated tr   aining block
 trainblock = qam_mod(trainbits,qam_dim);
-
+qam_orders = no_bit_loading(nfft, qam_dim);
 %make a sequence of 100 trainingblocks
 ofdm_train_seq = repmat(trainblock,1,100);
 %ofdm of train seq
-Tx = ofdm_mod(ofdm_train_seq,nfft,prefix_length);
+Tx = ofdm_mod_est(ofdm_train_seq,qam_orders,prefix_length);
 [simin,nbsecs,fs,sync_pulse] = initparams(Tx,fs,channel_order);
-sim('recplay');
-sigout = simout.signals.values;
+sigout = fftfilt(h(1:channel_order),simin(:,1));
+
+%sim('recplay');
+%sigout = simout.signals.values;
 Rx =alignIO(sigout,sync_pulse,channel_order);
 %part of channel model
 figure; plot(sigout); title('received');
@@ -25,7 +27,7 @@ figure;
 plot(Rx); hold on; plot(Tx); hold off; legend('Rx', 'Tx'); title('aligned');
 
 % Demodulaten using 
-[output_sig,calc_channel_freq_resp] = ofdm_demod(Rx,nfft,prefix_length,trainblock);
+[output_sig,calc_channel_freq_resp] = ofdm_demod_est(Rx,qam_orders,prefix_length,trainblock);
 received = qam_demod(output_sig, qam_dim);
 figure;
 plot(abs(output_sig(50:100)));

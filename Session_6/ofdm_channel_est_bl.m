@@ -20,8 +20,10 @@ ofdm_train_seq = repmat(trainbits,1,100);
 qam_orders = no_bit_loading(nfft, qam_dim);
 Tx = ofdm_mod_bl(ofdm_train_seq,qam_orders,prefix_length);
 [simin,nbsecs,fs,sync_pulse] = initparams(Tx,fs,channel_order);
-sim('recplay');
-sigout = simout.signals.values;
+
+sigout = fftfilt(h(1:channel_order),simin(:,1));
+%sim('recplay');
+%sigout = simout.signals.values;
 Rx =alignIO(sigout,sync_pulse,channel_order);
 %part of channel model
 % channel_model = h(1:channel_order);

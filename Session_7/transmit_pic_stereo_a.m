@@ -9,19 +9,11 @@ channel_order = 100;
 % Generate two random channels
 channel_1 = randn(1,channel_order);
 channel_2 = randn(1,channel_order);
-H1 = fft(channel_1, nfft);
-H2 = fft(channel_2, nfft);
-H1_2 = sqrt(abs(H1).^2 + abs(H2).^2);
 
 [a, b] = fixed_transmitter_side_beamformer(channel_1, channel_2, nfft);
 %b = zeros(size(a));
 %a = ones(size(b));
-figure;
-hold on;plot((abs(H1))); plot((abs(H2))); plot((abs(H1_2))); hold off;
-title('H^1, H^2, H^{1+2}');
-legend('H^1', 'H^2', 'H^{1+2}');
-ylabel('magnitude')
-xlim([1 nfft])
+
 
 qam_orders = no_bit_loading(nfft,qam_dim);
 
