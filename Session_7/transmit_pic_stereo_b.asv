@@ -3,15 +3,15 @@ clear;
 load IRest.mat
 nfft = 512;
 qam_dim = 6;
-prefix_length =150;
-Lt = 100; %amount of training frames
+prefix_length =350;
+Lt = 5; %amount of training frames
 Ld = 0; %amount of data frames
 fs = 16000;
 channel_order = 100;
 
 % Generate two random channels
 channel_1 = h(1:channel_order); %randn(1, channel_order);
-channel_2 = 0.8*h(1:channel_order); %randn(1,channel_order);
+channel_2 = h(1:channel_order); %randn(1,channel_order);
 H1 = fft(channel_1, nfft);
 H2 = fft(channel_2, nfft);
 
@@ -44,10 +44,10 @@ ofdmStream_right = [ofdmStream1_right; ofdmStream2_right];
 
 [simin,nbsecs,fs,sync_pulse] = initparams_stereo(ofdmStream_left,ofdmStream_right,fs,prefix_length);
 
-% sigout1 = fftfilt(channel_1, simin(:,1));
-% sigout2 = fftfilt(channel_2, simin(:,2));
-% sigout = sigout1 + sigout2;
-%sigout = awgn(sigout,30);
+sigout1 = fftfilt(channel_1, simin(:,1));
+sigout2 = fftfilt(channel_2, simin(:,2));
+sigout = sigout1 + sigout2;
+sigout = awgn(sigout,30);
 sim('recplay');
 sigout = simout.signals.values;
 
@@ -121,7 +121,7 @@ trainbits = randi([0 1],1,bitcount);
 % leftStream = real(leftStream);
 % rightStream = real(rightStream); %waarom complex geworden???
 
-[simin,nbsecs,fs,sync_pulse] = initparams_stereo(leftStream,rightStream,fs,prefix_length);
+[simin,nbsecs,fs,sync_pulse] = initparams_stereo(leftStream,rightStream,fs,channel_order);
 %%
 sim('recplay');
 sigout = simout.signals.values;

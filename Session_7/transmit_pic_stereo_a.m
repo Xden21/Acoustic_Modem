@@ -30,7 +30,7 @@ trainbits = randi([0 1],1,bitcount);
 sigout1 = fftfilt(channel_1, ofdmStream1);
 sigout2 = fftfilt(channel_2, ofdmStream2);
 sigout = sigout1 + sigout2;
-sigout = awgn(sigout,30);
+sigout = awgn(sigout,inf);
 
 [output_sig,calc_channel_freq_resp] = ofdm_demod_bl(sigout,qam_orders,prefix_length,trainblock,Lt,Ld); %no need for the stereo version, it's the same
 received = output_sig;
