@@ -59,17 +59,21 @@ function [ofdm_packet, trainframe, data_windows] = build_ofdm_packet(bitstream,q
             trainframe(nfft-bin+2,:) = conj(qam_symb);
         end
     end
-    
-    data_windows = ceil(frame_count/Ld);
-    ofdm_packet = zeros(nfft, frame_count + Lt*data_windows);
-    
-    frames_to_send = mod(frame_count, Ld);
-    for pack=1:data_windows
-        if(pack==data_windows && frames_to_send ~= 0)
-            ofdm_packet(:,(Ld+Lt)*(pack - 1)+1: (Ld+Lt)*(pack - 1)+(frames_to_send+Lt)) = [repmat(trainframe,1,Lt), ofdm_data_packet(:,(Ld)*(pack - 1)+1:(Ld)*(pack - 1)+(frames_to_send))];
-        else
-            ofdm_packet(:,(Ld+Lt)*(pack - 1)+1: (Ld+Lt)*pack) = [repmat(trainframe,1,Lt), ofdm_data_packet(:,(Ld)*(pack - 1)+1: (Ld)*pack)];
+    if (Ld >0)
+        data_windows = ceil(frame_count/Ld);
+        ofdm_packet = zeros(nfft, frame_count + Lt*data_windows);
+
+        frames_to_send = mod(frame_count, Ld);
+        for pack=1:data_windows
+            if(pack==data_windows && frames_to_send ~= 0)
+                ofdm_packet(:,(Ld+Lt)*(pack - 1)+1: (Ld+Lt)*(pack - 1)+(frames_to_send+Lt)) = [repmat(trainframe,1,Lt), ofdm_data_packet(:,(Ld)*(pack - 1)+1:(Ld)*(pack - 1)+(frames_to_send))];
+            else
+                ofdm_packet(:,(Ld+Lt)*(pack - 1)+1: (Ld+Lt)*pack) = [repmat(trainframe,1,Lt), ofdm_data_packet(:,(Ld)*(pack - 1)+1: (Ld)*pack)];
+            end
         end
+    else
+        ofdm_packet(:,1:Lt) = repmat(trainframe,1,Lt);
+        data_windows = 0;
     end
 end
 
