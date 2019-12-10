@@ -5,13 +5,13 @@ prefix_length =150;
 
 % Filter params
 Lt = 10; %amount of training frames
-mu = 0.8;
-alpha = 0.7;
+mu = 0.2;
+alpha = 0.0001;
 
 fs = 16000;
 channel_order = 60;
-
-BWUsage = 100;
+% 
+% BWUsage = 100;
 
 %% Channel Estimation
 %random bitstream

@@ -3,8 +3,8 @@ qam_symbol_length = 1000;
 qam_dim = 4;
 delta = [-0.25-.25i, 0.01+0.1i];
 snr = 40;
-mu = 0.8;
-alpha = 0.5;
+mu = 0.1;
+alpha = 0.0001;
 %generate random bit sequence
 bit_seq = randi([0 1],2,qam_dim*qam_symbol_length);
 

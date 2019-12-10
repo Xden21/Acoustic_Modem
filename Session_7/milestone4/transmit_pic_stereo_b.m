@@ -2,16 +2,16 @@ close all;
 clear;
 load IRest.mat
 nfft = 512;
-qam_dim = 6;
-prefix_length =350;
-Lt = 5; %amount of training frames
+qam_dim = 4;
+prefix_length =150;
+Lt = 100; %amount of training frames
 Ld = 0; %amount of data frames
 fs = 16000;
 channel_order = 100;
 
 % Generate two random channels
 channel_1 = h(1:channel_order); %randn(1, channel_order);
-channel_2 = h(1:channel_order); %randn(1,channel_order);
+channel_2 = 0.8*h(1:channel_order); %randn(1,channel_order);
 H1 = fft(channel_1, nfft);
 H2 = fft(channel_2, nfft);
 
@@ -44,14 +44,14 @@ ofdmStream_right = [ofdmStream1_right; ofdmStream2_right];
 
 [simin,nbsecs,fs,sync_pulse] = initparams_stereo(ofdmStream_left,ofdmStream_right,fs,prefix_length);
 
-sigout1 = fftfilt(channel_1, simin(:,1));
-sigout2 = fftfilt(channel_2, simin(:,2));
-sigout = sigout1 + sigout2;
-sigout = awgn(sigout,30);
+% sigout1 = fftfilt(channel_1, simin(:,1));
+% sigout2 = fftfilt(channel_2, simin(:,2));
+% sigout = sigout1 + sigout2;
+%sigout = awgn(sigout,30);
 sim('recplay');
 sigout = simout.signals.values;
 
-aligned_sigout = alignIO(sigout,sync_pulse,channel_order);
+aligned_sigout = alignIO(sigout,sync_pulse,prefix_length);
 aligned_sigout = aligned_sigout(1:length(ofdmStream_left));
 
 % figure;
@@ -105,9 +105,10 @@ channel_right = calc_channel_freq_resp(:,2);
 %%
 
 [a, b] = fixed_transmitter_side_beamformer(ifft(channel_left, nfft),ifft(channel_right, nfft), nfft);
+
 %%
-Lt = 10;
-Ld = 30;
+Lt = 5;
+Ld = 10;
 qam_orders = no_bit_loading(nfft,qam_dim);
 
 bitcount = 0;
@@ -118,15 +119,15 @@ trainbits = randi([0 1],1,bitcount);
 [bitStream, imageData, colorMap, imageSize, bitsPerPixel] = imagetobitstream('image.bmp');
 
 [leftStream, rightStream, trainblock,amount_of_packs] = ofdm_mod_stereo(bitStream,qam_orders,prefix_length,trainbits,Lt,Ld,a, b);
-% leftStream = real(leftStream);
-% rightStream = real(rightStream); %waarom complex geworden???
 
-[simin,nbsecs,fs,sync_pulse] = initparams_stereo(leftStream,rightStream,fs,channel_order);
+[simin,nbsecs,fs,sync_pulse] = initparams_stereo(leftStream,rightStream,fs,prefix_length);
 %%
 sim('recplay');
 sigout = simout.signals.values;
-
-aligned_sigout_data = alignIO(sigout,sync_pulse,channel_order);
+% sigout1 = fftfilt(channel_1, simin(:,1));
+% sigout2 = fftfilt(channel_2, simin(:,2));
+% sigout = sigout1 + sigout2;
+aligned_sigout_data = alignIO(sigout,sync_pulse,prefix_length);
 aligned_sigout_data = aligned_sigout_data(1:length(leftStream),:);
 
 
